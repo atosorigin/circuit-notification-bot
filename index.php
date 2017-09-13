@@ -29,8 +29,10 @@ else
     $token = $response['access_token'];
 }
 
-// Configure OAuth2 access token for authorization: oauth
-Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken($token)->setHost('https://eu.yourcircuit.com/rest/v2');
+// Configure Host and OAuth2 access token for authorization
+Swagger\Client\Configuration::getDefaultConfiguration()
+    ->setAccessToken($token)
+    ->setHost(BASE_URL . 'rest/v2');
 
 $api_instance = new Swagger\Client\Api\MessagingBasicApi();
 $conv_id = $config['conId']; // string | The ID of the conversation to which the new item has to be added
