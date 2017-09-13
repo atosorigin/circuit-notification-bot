@@ -3,23 +3,31 @@
 require_once(__DIR__ . '/vendor/autoload.php');
 require_once(__DIR__ . '/config.php');
 
-use GuzzleHttp\Client;
+use ICanBoogie\Storage\FileStorage;
 
-$client = new \GuzzleHttp\Client();
+const BASE_URL  = 'https://eu.yourcircuit.com/';
+const TOKEN_KEY = 'token_response';
 
-$response = $client->post('https://eu.yourcircuit.com/oauth/token/', [
-    'body' => [
-        'client_id' => $config['client']['id'],
-        'client_secret' => $config['client']['secret'],
-        'grant_type' => 'client_credentials',
-        'scope' => 'ALL'
-    ]
-])->json();
+$storage = new FileStorage(__DIR__);
+$tokenEndpoint = BASE_URL . 'oauth/token';
 
-$response['expires'] = time() + $response['expires_in'];
-print_r($response);
+if($response = $storage->retrieve(TOKEN_KEY))
+{
+    echo 'Token loaded', PHP_EOL;
+    $token = $response['access_token'];
+}
+else
+{
+    echo 'No token found, requesting new one...', PHP_EOL;
 
-$token = $response['access_token'];
+    $response = (new OAuth2\Client($config['client']['id'], $config['client']['secret']))
+        ->getAccessToken($tokenEndpoint, 'client_credentials', ['scope' => 'ALL'])
+        ['result'];
+
+    $storage->store(TOKEN_KEY, $response, $response['expires_in'] - 10 /* just to be sure */);
+
+    $token = $response['access_token'];
+}
 
 // Configure OAuth2 access token for authorization: oauth
 Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken($token)->setHost('https://eu.yourcircuit.com/rest/v2');
