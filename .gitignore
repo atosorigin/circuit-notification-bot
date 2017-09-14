@@ -2,4 +2,4 @@
 circuit-api
 config.php
 vendor/
-token_response*
+token_*

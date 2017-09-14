@@ -7,7 +7,6 @@ use ICanBoogie\Storage\FileStorage;
 if(!function_exists('circuit_bot'))
 {
     define('TOKEN_ENDPOINT', 'https://eu.yourcircuit.com/oauth/token');
-    define('TOKEN_KEY', 'token_response');
 
     define('FILTER_WAKEUP', 'wakeup');
     define('FILTER_WAKEUP_ADV', 'wakeup_advanced');
@@ -18,8 +17,15 @@ if(!function_exists('circuit_bot'))
     {
         global $hooks;
 
+        if(!isset($config['client']) || !isset($config['client']['id']))
+        {
+            die('Missing OAuth Client-ID!');
+        }
+
         $storage = new FileStorage(__DIR__);
+
         $conv_id = $config['conId'];
+        $token_key = 'token_' . $config['client']['id'];
 
         function print_conv_item($conv_item)
         {
@@ -29,7 +35,7 @@ if(!function_exists('circuit_bot'))
         }
 
         // Try to reuse OAuth token, request new one if expired.
-        if($response = $storage->retrieve(TOKEN_KEY))
+        if($response = $storage->retrieve($token_key))
         {
             echo 'Token loaded', PHP_EOL;
             $token = $response['access_token'];
@@ -42,7 +48,7 @@ if(!function_exists('circuit_bot'))
                 ->getAccessToken(TOKEN_ENDPOINT, 'client_credentials', ['scope' => 'ALL'])
                 ['result'];
 
-            $storage->store(TOKEN_KEY, $response, $response['expires_in'] - 10 /* just to be sure */);
+            $storage->store($token_key, $response, $response['expires_in'] - 10 /* just to be sure */);
 
             $token = $response['access_token'];
         }
