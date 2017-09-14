@@ -1,0 +1,23 @@
+{
+    "name": "ciis0/circuit-bot-plugin-ex",
+    "description": "Circuit bot example plugin",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../*"
+        }
+    ],
+    "authors": [
+        {
+            "name": "Christoph Schulz",
+            "email": "christoph.2.schulz@atos.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "ciis0/circuit-bot": "dev-master"
+    },
+    "autoload":{
+        "files": ["index.php"]
+    }
+}
