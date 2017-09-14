@@ -1,5 +1,5 @@
 # Circuit Bot
-Sends status messages to circuit converstations.
+Sends status messages to circuit conversations.
 
 # Developing
 
