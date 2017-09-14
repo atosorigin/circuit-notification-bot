@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/vendor/autoload.php');
+require_once(__DIR__ . '/vendor/autoload.php'); // $hooks, $config, AdvancedMessage
 
 if(!function_exists('example_wakeup'))
 {
@@ -17,7 +17,9 @@ if(!function_exists('example_wakeup'))
 
     function example_wakeup_advanced_w_parent($ary)
     {
-        $ary[] = new AdvancedMessage('Hello!', '0435575c-f3c3-4dd1-8acd-0de249a649df');
+        global $config;
+
+        $ary[] = new AdvancedMessage('Hello!', $config['parent_id']);
         return $ary;
     }
 
