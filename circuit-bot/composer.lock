@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "562f9d4fc178840673d0721eb5c7d77d",
+    "content-hash": "4c79d5d794f1fbfdeb0237c5cad3c865",
     "packages": [
         {
             "name": "adoy/oauth2",
@@ -51,8 +51,8 @@
             "version": "1.0.0",
             "dist": {
                 "type": "path",
-                "url": "./circuit-api",
-                "reference": "7f274e76c7d7dd3b4dcdc4197aa1953233f03535",
+                "url": "../circuit-api",
+                "reference": "7707cd02bed4bdd1c853b78a7384f22d84952af6",
                 "shasum": null
             },
             "require": {

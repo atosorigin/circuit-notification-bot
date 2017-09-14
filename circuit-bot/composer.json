@@ -1,11 +1,11 @@
 {
-    "name": "ciis0/circuit_bot",
+    "name": "ciis0/circuit-bot",
     "description": "Sends status messages to circuit conversations.",
     "type": "project",
     "repositories": [
         {
             "type": "path",
-            "url": "./circuit-api"
+            "url": "../*"
         }
     ],
     "authors": [
