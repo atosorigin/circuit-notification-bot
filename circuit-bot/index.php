@@ -16,6 +16,13 @@ if(!function_exists('circuit_bot'))
         $storage = new FileStorage(__DIR__);
         $tokenEndpoint = BASE_URL . 'oauth/token';
 
+        function print_conv_item($conv_item)
+        {
+            echo 'Message...', PHP_EOL,
+                'ID      ', $conv_item['item_id'], PHP_EOL,
+                'Content ', $conv_item['text']['content'], PHP_EOL, PHP_EOL;
+        }
+
         if($response = $storage->retrieve(TOKEN_KEY))
         {
             echo 'Token loaded', PHP_EOL;
@@ -45,24 +52,69 @@ if(!function_exists('circuit_bot'))
             return array_merge($ary, ['integrated filter']);
         }
 
-        $result = print_r($hooks->apply_filters('wakeup', []), TRUE);
-
-        echo 'Hook result:', PHP_EOL, $result;
-        echo 'Hooks:', PHP_EOL;
-
-        print_r($hooks);
-
-        $result = str_replace(PHP_EOL, "<br>", $result);
-
         $api_instance = new Swagger\Client\Api\MessagingBasicApi();
-        $conv_id = $config['conId']; // string | The ID of the conversation to which the new item has to be added
-        $content = "<pre><code>$result</code></pre>"; // string | The actual content of the item, is mandatory unless an attachment is added
+        $conv_id = $config['conId'];
 
-        try {
-            $result = $api_instance->addTextItem($conv_id, $content);
-            print_r($result);
-        } catch (Exception $e) {
-            echo 'Exception when calling MessagingBasicApi->addTextItem: ', $e->getMessage(), PHP_EOL;
+        $wakeup = $hooks->apply_filters('wakeup', []);
+        $wakeup_advanced = $hooks->apply_filters('wakeup_advanced', []);
+
+        foreach($wakeup as $key => $content)
+        {
+            try
+            {
+                $result = $api_instance->addTextItem($conv_id, $content);
+                print_conv_item($result);
+            }
+            catch (Exception $e)
+            {
+                echo 'Exception when calling MessagingBasicApi->addTextItem: ', $e->getMessage(), PHP_EOL;
+            }
+
         }
+
+        foreach($wakeup_advanced as $msg_adv)
+        {
+            try
+            {
+                if($msg_adv->parent)
+                {
+                    $result = $api_instance->addTextItemWithParent($conv_id, $msg_adv->parent, $msg_adv->message);
+                }
+                else
+                {
+                    global $hooks;
+
+                    $result = $api_instance->addTextItem($conv_id, $msg_adv->message);
+
+                    $hooks->do_action('parent_id', $msg_adv->id, $result['item_id']);
+
+                }
+                print_conv_item($result);
+            }
+            catch (Exception $e)
+            {
+                echo 'Exception when calling MessagingBasicApi->addTextItem: ', $e->getMessage(), PHP_EOL;
+            }
+
+        }
+
+    }
+
+    // This is mainly a structure, not an encapsulated container.
+    class AdvancedMessage
+    {
+        public $parent;
+        public $message;
+        public $id;
+
+        private static $nextId = 0;
+
+        public function __construct($message, $parent = null)
+        {
+            $this->id = AdvancedMessage::$nextId++;
+            $this->message = $message;
+            $this->parent  = $parent;
+        }
+
     }
 }
