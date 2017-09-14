@@ -8,6 +8,8 @@ use ICanBoogie\Storage\FileStorage;
 const BASE_URL  = 'https://eu.yourcircuit.com/';
 const TOKEN_KEY = 'token_response';
 
+global $hooks;
+
 $storage = new FileStorage(__DIR__);
 $tokenEndpoint = BASE_URL . 'oauth/token';
 
@@ -34,9 +36,24 @@ Swagger\Client\Configuration::getDefaultConfiguration()
     ->setAccessToken($token)
     ->setHost(BASE_URL . 'rest/v2');
 
+$hooks->add_filter('wakeup', 'wakeup_ex');
+
+function wakeup_ex($ary){
+    return array_merge($ary, ['integrated filter']);
+}
+
+$result = print_r($hooks->apply_filters('wakeup', []), TRUE);
+
+echo 'Hook result:', PHP_EOL, $result;
+echo 'Hooks:', PHP_EOL;
+
+print_r($hooks);
+
+$result = str_replace(PHP_EOL, "<br>", $result);
+
 $api_instance = new Swagger\Client\Api\MessagingBasicApi();
 $conv_id = $config['conId']; // string | The ID of the conversation to which the new item has to be added
-$content = "content_example"; // string | The actual content of the item, is mandatory unless an attachment is added
+$content = "<pre><code>$result</code></pre>"; // string | The actual content of the item, is mandatory unless an attachment is added
 
 try {
     $result = $api_instance->addTextItem($conv_id, $content);
