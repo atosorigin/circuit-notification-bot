@@ -1,7 +1,5 @@
 <?php
 
-require_once(__DIR__ . '/vendor/autoload.php');
-
 use ICanBoogie\Storage\FileStorage;
 
 if(!function_exists('circuit_bot'))
@@ -13,9 +11,12 @@ if(!function_exists('circuit_bot'))
 
     define('ACTION_PARENT_ID', 'parent_id');
 
-    function circuit_bot($config)
+    function circuit_bot($the_config)
     {
         global $hooks;
+        global $config;
+
+        $config = $the_config; // make config available in filters and actions
 
         if(!isset($config['client']) || !isset($config['client']['id']))
         {

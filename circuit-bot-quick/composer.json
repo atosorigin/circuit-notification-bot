@@ -1,6 +1,6 @@
 {
-    "name": "ciis0/circuit-bot-dabag-auregis",
-    "description": "DABAG/AUREGIS bot",
+    "name": "ciis0/circuit-bot-quick",
+    "description": "Most basic Circuit bot. Simply loads configuration from config.php from requiring project.",
     "repositories": [
         {
             "type": "path",
@@ -15,7 +15,9 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "ciis0/circuit-bot-plugin-ex": "dev-master",
-        "ciis0/circuit-bot-quick": "dev-master"
+        "ciis0/circuit-bot": "dev-master"
+    },
+    "autoload": {
+        "files": [ "index.php" ]
     }
 }

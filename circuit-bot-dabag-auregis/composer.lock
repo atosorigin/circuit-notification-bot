@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a519afff2bbfb419ed8fe0efcbba63db",
+    "content-hash": "9427366abe5427ffda4d4caa026ac897",
     "packages": [
         {
             "name": "adoy/oauth2",
@@ -141,6 +141,32 @@
             "description": "Circuit bot example plugin"
         },
         {
+            "name": "ciis0/circuit-bot-quick",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "../circuit-bot-quick",
+                "reference": "fb0bc4129ebf11df54c7bf8de3655cabe7c05678",
+                "shasum": null
+            },
+            "require": {
+                "ciis0/circuit-bot": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "index.php"
+                ]
+            },
+            "authors": [
+                {
+                    "name": "Christoph Schulz",
+                    "email": "christoph.2.schulz@atos.net"
+                }
+            ],
+            "description": "Most basic Circuit bot. Simply loads configuration from config.php from requiring project."
+        },
+        {
             "name": "circuit/circuit-php-api",
             "version": "1.0.0",
             "dist": {
@@ -237,8 +263,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "ciis0/circuit-bot": 20,
-        "ciis0/circuit-bot-plugin-ex": 20
+        "ciis0/circuit-bot-plugin-ex": 20,
+        "ciis0/circuit-bot-quick": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -1,5 +1,4 @@
 <?php
-require_once(__DIR__ . '/vendor/autoload.php'); // $hooks, $config, AdvancedMessage
 
 if(!function_exists('example_wakeup'))
 {
