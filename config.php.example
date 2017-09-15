@@ -1,0 +1,8 @@
+<?php
+$config = array(
+    "conId" => "",
+    "client" => array (
+        "id" => "",
+        "secret" => "",
+    ),
+);
