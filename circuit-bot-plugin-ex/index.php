@@ -18,7 +18,7 @@ if(!function_exists('example_wakeup'))
     {
         global $config;
 
-        $ary[] = new AdvancedMessage('Hello!', $config['parent_id']);
+        $ary[] = new AdvancedMessage('Hello!', $config['plugins']['example']['parent_id']);
         return $ary;
     }
 

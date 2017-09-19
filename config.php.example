@@ -1,8 +1,13 @@
 <?php
-$config = array(
-    "conId" => "",
-    "client" => array (
-        "id" => "",
-        "secret" => "",
-    ),
-);
+$config = [
+    'conId' => '',
+    'client' => [
+        'id' => '',
+        'secret' => '',
+    ],
+    'plugins' => [
+        'example' => [
+            'parent_id' => '',
+        ]
+    ]
+];
