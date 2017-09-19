@@ -8,6 +8,7 @@ $config = [
     'plugins' => [
         'example' => [
             'parent_id' => '',
+            'conv_id' => ''
         ]
     ]
 ];
