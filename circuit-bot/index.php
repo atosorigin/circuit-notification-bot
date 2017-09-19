@@ -17,16 +17,7 @@ if(!function_exists('circuit_bot'))
         global $config;
 
         $config = $the_config; // make config available in filters and actions
-
-        if(!isset($config['client']) || !isset($config['client']['id']))
-        {
-            die('Missing OAuth Client-ID!');
-        }
-
-        $storage = new FileStorage(__DIR__);
-
-        $conv_id = $config['conId'];
-        $token_key = 'token_' . $config['client']['id'];
+        $hooks_only = isset($config['hooks_only']) && $config['hooks_only'];
 
         function print_conv_item($conv_item)
         {
@@ -35,32 +26,63 @@ if(!function_exists('circuit_bot'))
                 'Content ', $conv_item['text']['content'], PHP_EOL, PHP_EOL;
         }
 
-        // Try to reuse OAuth token, request new one if expired.
-        if($response = $storage->retrieve($token_key))
+        if(isset($config['client']) && isset($config['client']['id']) && isset($config['client']['secret']))
         {
-            echo 'Token loaded', PHP_EOL;
-            $token = $response['access_token'];
+            $storage = new FileStorage(__DIR__);
+            $token_key = 'token_' . $config['client']['id'];
+
+            // Try to reuse OAuth token, request new one if expired.
+            if($response = $storage->retrieve($token_key))
+            {
+                echo 'Token loaded', PHP_EOL;
+                $token = $response['access_token'];
+            }
+            else
+            {
+                echo 'No token found, requesting new one...', PHP_EOL;
+
+                $response = (new OAuth2\Client($config['client']['id'], $config['client']['secret']))
+                    ->getAccessToken(TOKEN_ENDPOINT, 'client_credentials', ['scope' => 'ALL'])
+                    ['result'];
+
+                $storage->store($token_key, $response, $response['expires_in'] - 10 /* just to be sure */);
+
+                $token = $response['access_token'];
+            }
+
+            // Configure OAuth2 access token for authorization
+            Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken($token);
+
         }
-        else
+        elseif(!$hooks_only)
         {
-            echo 'No token found, requesting new one...', PHP_EOL;
-
-            $response = (new OAuth2\Client($config['client']['id'], $config['client']['secret']))
-                ->getAccessToken(TOKEN_ENDPOINT, 'client_credentials', ['scope' => 'ALL'])
-                ['result'];
-
-            $storage->store($token_key, $response, $response['expires_in'] - 10 /* just to be sure */);
-
-            $token = $response['access_token'];
+            die('Missing OAuth Client-ID and/or Client secret!');
         }
 
-        // Configure OAuth2 access token for authorization
-        Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken($token);
-
-        $api_instance = new Swagger\Client\Api\MessagingBasicApi();
+        echo 'Running hooks', PHP_EOL;
 
         $wakeup = $hooks->apply_filters(FILTER_WAKEUP, []);
         $wakeup_advanced = $hooks->apply_filters(FILTER_WAKEUP_ADV, []);
+
+        echo 'Done.', PHP_EOL;
+
+        if($hooks_only)
+        {
+            echo 'Ran only hooks, as requested by $config[\'hooks_only\']', PHP_EOL,
+                'hooks:', PHP_EOL;
+            print_r($hooks);
+
+            echo 'wakeup result', PHP_EOL;
+            print_r($wakeup);
+
+            echo 'wakeup_advanced result', PHP_EOL;
+            print_r($wakeup_advanced);
+
+            return;
+        }
+
+        $conv_id = $config['conId'];
+        $api_instance = new Swagger\Client\Api\MessagingBasicApi();
 
         foreach($wakeup as $key => $content)
         {
