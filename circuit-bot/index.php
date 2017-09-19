@@ -103,7 +103,7 @@ if(!function_exists('circuit_bot'))
             {
                 if($msg_adv->parent)
                 {
-                    $result = $api_instance->addTextItemWithParent($conv_id, $msg_adv->parent, $msg_adv->message);
+                    $result = $api_instance->addTextItemWithParent($msg_adv->conv_id ? $msg_adv->conv_id : $conv_id, $msg_adv->parent, $msg_adv->message);
                 }
                 else
                 {
@@ -131,6 +131,7 @@ if(!function_exists('circuit_bot'))
         public $parent;
         public $message;
         public $id;
+        public $conv_id;
 
         private static $nextId = 0;
 
