@@ -1,18 +1,22 @@
 #!/usr/bin/env php
 <?php
-if(count($argv) != 2)
+if(count($argv) < 2)
 {
-    fwrite(STDERR, "ERROR: This script takes exactly one argument. For more execute \"{$argv[0]} help\".\n");
+    fwrite(STDERR, "ERROR: This script takes one or two argument(s). For more execute \"{$argv[0]} help\".\n");
     exit(2);
 }
 
 if($argv[1] == "help")
 {
-    fwrite(STDERR, "Circuit Bot runner.\nUsage: {$argv[0]} bot-dir");
+    fwrite(STDERR,
+        "Circuit Bot runner.\nUsage: {$argv[0]} bot-dir .test_plugin].\n" .
+        "bot-dir: bot's directory name\ntest_plugin: \"test_plugin\" if the directory is a plugin, not a bot, and you want to test the hooks. (Your plugin must reside in index.php.)"
+    );
     exit(0);
 }
 
 $bot_dir=$argv[1];
+$test_plugin=isset($argv[2]) && $argv[2] == "test_plugin";
 
 if(is_dir($bot_dir))
 {
@@ -28,9 +32,15 @@ if(is_dir($bot_dir))
     {
         require_once('./config.php'); // . is PWD not __DIR__ !
     }
-    else
+    elseif(!is_array($config)) // this file meight be included and config already set.
     {
         $config = [];
+    }
+
+    if($test_plugin)
+    {
+        $config['hooks_only'] = true;
+        include('./index.php');
     }
 
     circuit_bot($config);
