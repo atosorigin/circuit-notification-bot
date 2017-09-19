@@ -13,6 +13,7 @@ if(!function_exists('example_wakeup'))
 
     $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_w_parent');
     $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_wo_parent');
+    $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_w_conv_id');
 
     function example_wakeup_advanced_w_parent($ary)
     {
@@ -25,6 +26,18 @@ if(!function_exists('example_wakeup'))
     function example_wakeup_advanced_wo_parent($ary)
     {
         $ary[] = new AdvancedMessage('Hello?');
+        return $ary;
+    }
+
+    function example_wakeup_advanced_w_conv_id($ary)
+    {
+        global $config;
+
+        $mes = new AdvancedMessage('Hello!');
+        $mes->conv_id = $config['plugins']['example']['conv_id'];
+
+        $ary[] = $mes;
+
         return $ary;
     }
 
