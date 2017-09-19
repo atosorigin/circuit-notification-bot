@@ -1,0 +1,26 @@
+{
+    "name": "ciis0/circuit-plugin-feed-poll",
+    "description": "Circuit bot plugin for posting new messages from a feed",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../*"
+        }
+    ],
+    "authors": [
+        {
+            "name": "Christoph Schulz",
+            "email": "christoph.2.schulz@atos.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "guzzlehttp/guzzle": "5.3.x-dev",
+        "simplepie/simplepie": "dev-master"
+    },
+    "autoload": {
+        "files": [ "index.php" ]
+    },
+    "require-dev": {
+    }
+}
