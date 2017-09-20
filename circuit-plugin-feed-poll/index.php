@@ -12,6 +12,8 @@ if(!function_exists('wakeup_feed'))
         global $plugin_states;
 
         $plugin_states['ciis0.feed-poll'] = [
+            'msg_ids' => [],
+            'mtl' => [], // message to link
             'stor' => new ICanBoogie\Storage\FileStorage(__DIR__ . DIRECTORY_SEPARATOR . 'stor'), // stor = store (no typo here)
         ];
     }
@@ -25,7 +27,7 @@ if(!function_exists('wakeup_feed'))
         global $plugin_states;
 
         $my_config = $config['plugins']['feed_poll'];
-        $my_state = $plugin_states['ciis0.feed-poll'];
+        $my_state = &$plugin_states['ciis0.feed-poll'];
 
         foreach($my_config['feeds'] as $my_feed)
         {
@@ -79,7 +81,15 @@ if(!function_exists('wakeup_feed'))
                 {
                     if($item->get_id() == $mri) break;
 
-                    $mes = new AdvancedMessage($item->get_title() . ': ' . preg_replace('/\\s+/', ' ', $item->get_description())); // circuit does not like line breaks
+                    $link = $item->get_link(0);
+
+                    $mes = new AdvancedMessage(
+                        $item->get_title() . ': ' . preg_replace('/\\s+/', ' ', $item->get_description()), // circuit does not like line breaks
+                        $storage->retrieve('ltp_' . sha1($link)) // ltp link to parent
+                    );
+
+                    $my_state['msg_ids'][] = $mes->id;
+                    $my_state['mtl'][$mes->id] = $link;
 
                     if(isset($conv_id))
                     {
@@ -95,6 +105,24 @@ if(!function_exists('wakeup_feed'))
             $storage->store($feed_mri_token, $mri);
         }
         return $ary;
+    }
+
+    $hooks->add_action(ACTION_PARENT_ID, 'parent_id_feed', 10 /* default priority */, 2);
+
+    function parent_id_feed($msg_id, $item_id)
+    {
+        global $plugin_states;
+        $my_state = $plugin_states['ciis0.feed-poll'];
+
+        if(in_array($msg_id, $my_state['msg_ids']))
+        {
+            echo "Feed: Message {$msg_id} is ours!", PHP_EOL;
+            $my_state['stor']->store('ltp_' .  sha1($my_state['mtl'][$msg_id]), $item_id); // ltp link to parent, hash to sanitize link (url)
+        }
+        else
+        {
+            echo "Feed: Message {$msg_id} not ours!", PHP_EOL;
+        }
     }
 
 }
