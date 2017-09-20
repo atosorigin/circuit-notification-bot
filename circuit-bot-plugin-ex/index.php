@@ -4,6 +4,15 @@ if(!function_exists('example_wakeup'))
 {
     global $hooks;
 
+    /**
+     * Record a message to our plugin state
+     */
+    function example_mrec($mes)
+    {
+        global $plugin_states;
+        $plugin_states['ciis0.example']['msg_ids'][] = $mes->id;
+    }
+
     $hooks->add_action(ACTION_PLG_INIT, 'example_init');
 
     function example_init()
@@ -39,7 +48,7 @@ if(!function_exists('example_wakeup'))
         global $plugin_states;
 
         $msg = new AdvancedMessage('Hello?');
-        $plugin_states['ciis0.example']['msg_ids'][] = $msg->id; // to be able to determine if it's ours, see example_parent_id
+        example_mrec($msg); // to be able to determine if it's ours, see example_parent_id
 
         $ary[] = $msg;
         return $ary;
