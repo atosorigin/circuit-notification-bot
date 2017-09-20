@@ -19,6 +19,11 @@ if(!function_exists('circuit_bot'))
             'Content ', $conv_item['text']['content'], PHP_EOL, PHP_EOL;
     }
 
+    function hooks_only($config)
+    {
+        return isset($config['hooks_only']) && $config['hooks_only'];
+    }
+
     function circuit_bot($the_config)
     {
         global $hooks;
@@ -27,7 +32,7 @@ if(!function_exists('circuit_bot'))
 
         $config = $the_config; // make config available in filters and actions
         $plugin_states = [];
-        $hooks_only = isset($config['hooks_only']) && $config['hooks_only'];
+        $hooks_only = hooks_only($config);
 
         if(isset($config['client']) && isset($config['client']['id']) && isset($config['client']['secret']))
         {
@@ -132,6 +137,56 @@ if(!function_exists('circuit_bot'))
 
         }
 
+    }
+
+    function circuit_send_message($content)
+    {
+        global $config;
+
+        if(hooks_only($config)) return;
+
+        try
+        {
+            print_conv_item($config['api.messaging.basic']->addTextItem($config['conv_id'], $content));
+        }
+        catch (Exception $e)
+        {
+            echo 'Exception when calling MessagingBasicApi->addTextItem: ', $e->getMessage(), PHP_EOL;
+        }
+    }
+
+    function circuit_send_message_adv(AdvancedMessage $msg_adv)
+    {
+
+        global $config;
+        global $hooks;
+
+        if(hooks_only($config)) return;
+
+        $api_instance = $config['api.messaging.basic'];
+        $conv_id = $config['conv_id'];
+
+        try
+        {
+            if($msg_adv->parent)
+            {
+                $result = $api_instance->addTextItemWithParent($msg_adv->conv_id ? $msg_adv->conv_id : $conv_id, $msg_adv->parent, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
+            }
+            else
+            {
+                global $hooks;
+
+                $result = $api_instance->addTextItem($conv_id, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
+
+                $hooks->do_action(ACTION_PARENT_ID, $msg_adv->id, $result['item_id']);
+
+            }
+            print_conv_item($result);
+        }
+        catch (Exception $e)
+        {
+            echo 'Exception when calling MessagingBasicApi->addTextItem/addTextItemWithParent: ', $e->getMessage(), PHP_EOL;
+        }
     }
 
     // This is mainly a structure, not an encapsulated container.
