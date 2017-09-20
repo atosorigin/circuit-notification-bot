@@ -34,6 +34,7 @@ if(!function_exists('example_wakeup'))
     $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_w_parent');
     $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_wo_parent');
     $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_w_conv_id');
+    $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_w_title');
 
     function example_wakeup_advanced_w_parent($ary)
     {
@@ -76,6 +77,19 @@ if(!function_exists('example_wakeup'))
 
         echo "Message with ID ${message_id} is ${parent_id}.", PHP_EOL,
             'It\'s ' . (in_array($message_id, $plugin_states['ciis0.example']['msg_ids']) ? 'not ' : '' ) . 'ours.', PHP_EOL;
+    }
+
+    function example_wakeup_advanced_w_title($ary)
+    {
+        global $plugin_states;
+
+        $mes = new AdvancedMessage('Hello.');
+        $mes->title = 'Title.';
+
+        example_mrec($mes);
+
+        $ary[] = $mes;
+        return $ary;
     }
 
 }
