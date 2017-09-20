@@ -27,7 +27,7 @@ if(!function_exists('wakeup_feed'))
                 $conv_id = $my_feed['conv_id'];
             }
 
-            $storage = new ICanBoogie\Storage\FileStorage(__DIR__);
+            $storage = new ICanBoogie\Storage\FileStorage(__DIR__ . DIRECTORY_SEPARATOR . 'stor'); // stor = store (no typo here)
             $feed_mri_token = 'mri_' . sha1($feed_url); // mri most recent id; hash to sanitize
 
             $client_cfg = [];
