@@ -5,7 +5,7 @@ if(!function_exists('wakeup_feed'))
 
     global $hooks;
 
-    $hooks->add_filter('wakeup', 'wakeup_feed');
+    $hooks->add_filter('wakeup_advanced', 'wakeup_feed');
 
     function wakeup_feed($ary)
     {
@@ -20,6 +20,12 @@ if(!function_exists('wakeup_feed'))
             $feed_url = $my_feed['feed_url'];
             $feed_auth = $my_feed['feed_auth'];
             $auth_url = $my_feed['auth_url'];
+            $conv_id = null;
+
+            if(isset($my_feed['conv_id']))
+            {
+                $conv_id = $my_feed['conv_id'];
+            }
 
             $storage = new ICanBoogie\Storage\FileStorage(__DIR__);
             $feed_mri_token = 'mri_' . sha1($feed_url); // mri most recent id; hash to sanitize
@@ -59,7 +65,15 @@ if(!function_exists('wakeup_feed'))
                 foreach ($feed->get_items() as $item)
                 {
                     if($item->get_id() == $mri) break;
-                    $ary[] = $item->get_title() . ': ' . preg_replace('/\\s+/', ' ', $item->get_description()); // circuit does not like line breaks
+
+                    $mes = new AdvancedMessage($item->get_title() . ': ' . preg_replace('/\\s+/', ' ', $item->get_description())); // circuit does not like line breaks
+
+                    if(isset($conv_id))
+                    {
+                        $mes->conv_id = $conv_id;
+                    }
+
+                    $ary[] = $mes;
                 }
                 $mri = $id0;
             }

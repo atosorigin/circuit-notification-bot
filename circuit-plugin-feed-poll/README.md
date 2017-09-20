@@ -41,6 +41,7 @@ $config = [
             'feeds' => [
                 [
                     'feed_url' => '',
+                    // 'conv_id' => '', // optional target conversation. If not set, use default conversation.
                     'feed_auth' => [
                         'form',
                         'cookies'
