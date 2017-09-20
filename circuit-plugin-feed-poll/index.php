@@ -5,14 +5,27 @@ if(!function_exists('wakeup_feed'))
 
     global $hooks;
 
+    $hooks->add_action(ACTION_PLG_INIT, 'feed_init');
+
+    function feed_init()
+    {
+        global $plugin_states;
+
+        $plugin_states['ciis0.feed-poll'] = [
+            'stor' => new ICanBoogie\Storage\FileStorage(__DIR__ . DIRECTORY_SEPARATOR . 'stor'), // stor = store (no typo here)
+        ];
+    }
+
     $hooks->add_filter('wakeup_advanced', 'wakeup_feed');
 
     function wakeup_feed($ary)
     {
 
         global $config;
+        global $plugin_states;
 
         $my_config = $config['plugins']['feed_poll'];
+        $my_state = $plugin_states['ciis0.feed-poll'];
 
         foreach($my_config['feeds'] as $my_feed)
         {
@@ -27,7 +40,7 @@ if(!function_exists('wakeup_feed'))
                 $conv_id = $my_feed['conv_id'];
             }
 
-            $storage = new ICanBoogie\Storage\FileStorage(__DIR__ . DIRECTORY_SEPARATOR . 'stor'); // stor = store (no typo here)
+            $storage = $my_state['stor'];
             $feed_mri_token = 'mri_' . sha1($feed_url); // mri most recent id; hash to sanitize
 
             $client_cfg = [];
