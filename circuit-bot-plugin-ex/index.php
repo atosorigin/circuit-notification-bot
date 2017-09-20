@@ -27,7 +27,7 @@ if(!function_exists('example_wakeup'))
     $hooks->add_filter('wakeup', 'example_wakeup');
 
     function example_wakeup($ary){
-        $ary[] = 'External filter';
+        circuit_send_message("External filter");
         return $ary;
     }
 
@@ -40,7 +40,8 @@ if(!function_exists('example_wakeup'))
     {
         global $config;
 
-        $ary[] = new AdvancedMessage('Hello!', $config['plugins']['example']['parent_id']);
+        circuit_send_message_adv(new AdvancedMessage('Hello!', $config['plugins']['example']['parent_id']));
+
         return $ary;
     }
 
@@ -51,7 +52,8 @@ if(!function_exists('example_wakeup'))
         $msg = new AdvancedMessage('Hello?');
         example_mrec($msg); // to be able to determine if it's ours, see example_parent_id
 
-        $ary[] = $msg;
+        circuit_send_message_adv($msg);
+
         return $ary;
     }
 
@@ -62,7 +64,7 @@ if(!function_exists('example_wakeup'))
         $mes = new AdvancedMessage('Hello!');
         $mes->conv_id = $config['plugins']['example']['conv_id'];
 
-        $ary[] = $mes;
+        circuit_send_message_adv($mes);
 
         return $ary;
     }
@@ -88,7 +90,8 @@ if(!function_exists('example_wakeup'))
 
         example_mrec($mes);
 
-        $ary[] = $mes;
+        circuit_send_message_adv($mes);
+
         return $ary;
     }
 

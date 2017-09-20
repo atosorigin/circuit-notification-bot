@@ -96,7 +96,7 @@ if(!function_exists('wakeup_feed'))
                         $mes->conv_id = $conv_id;
                     }
 
-                    $ary[] = $mes;
+                    circuit_send_message_adv($mes);
                 }
                 $mri = $id0;
             }
