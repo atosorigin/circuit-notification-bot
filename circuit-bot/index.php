@@ -9,14 +9,17 @@ if(!function_exists('circuit_bot'))
     define('FILTER_WAKEUP', 'wakeup');
     define('FILTER_WAKEUP_ADV', 'wakeup_advanced');
 
+    define('ACTION_PLG_INIT', 'init_plugins');
     define('ACTION_PARENT_ID', 'parent_id');
 
     function circuit_bot($the_config)
     {
         global $hooks;
         global $config;
+        global $plugin_states;
 
         $config = $the_config; // make config available in filters and actions
+        $plugin_states = [];
         $hooks_only = isset($config['hooks_only']) && $config['hooks_only'];
 
         function print_conv_item($conv_item)
@@ -58,6 +61,10 @@ if(!function_exists('circuit_bot'))
         {
             die('Missing OAuth Client-ID and/or Client secret!');
         }
+
+        echo 'Initializing plugins', PHP_EOL;
+
+        $hooks->do_action(ACTION_PLG_INIT);
 
         echo 'Running hooks', PHP_EOL;
 
