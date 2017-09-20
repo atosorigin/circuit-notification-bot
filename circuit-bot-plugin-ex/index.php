@@ -4,6 +4,15 @@ if(!function_exists('example_wakeup'))
 {
     global $hooks;
 
+    /**
+     * Record a message to our plugin state
+     */
+    function example_mrec($mes)
+    {
+        global $plugin_states;
+        $plugin_states['ciis0.example']['msg_ids'][] = $mes->id;
+    }
+
     $hooks->add_action(ACTION_PLG_INIT, 'example_init');
 
     function example_init()
@@ -25,6 +34,7 @@ if(!function_exists('example_wakeup'))
     $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_w_parent');
     $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_wo_parent');
     $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_w_conv_id');
+    $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_w_title');
 
     function example_wakeup_advanced_w_parent($ary)
     {
@@ -39,7 +49,7 @@ if(!function_exists('example_wakeup'))
         global $plugin_states;
 
         $msg = new AdvancedMessage('Hello?');
-        $plugin_states['ciis0.example']['msg_ids'][] = $msg->id; // to be able to determine if it's ours, see example_parent_id
+        example_mrec($msg); // to be able to determine if it's ours, see example_parent_id
 
         $ary[] = $msg;
         return $ary;
@@ -67,6 +77,19 @@ if(!function_exists('example_wakeup'))
 
         echo "Message with ID ${message_id} is ${parent_id}.", PHP_EOL,
             'It\'s ' . (in_array($message_id, $plugin_states['ciis0.example']['msg_ids']) ? 'not ' : '' ) . 'ours.', PHP_EOL;
+    }
+
+    function example_wakeup_advanced_w_title($ary)
+    {
+        global $plugin_states;
+
+        $mes = new AdvancedMessage('Hello.');
+        $mes->title = 'Title.';
+
+        example_mrec($mes);
+
+        $ary[] = $mes;
+        return $ary;
     }
 
 }

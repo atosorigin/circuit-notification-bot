@@ -110,13 +110,13 @@ if(!function_exists('circuit_bot'))
             {
                 if($msg_adv->parent)
                 {
-                    $result = $api_instance->addTextItemWithParent($msg_adv->conv_id ? $msg_adv->conv_id : $conv_id, $msg_adv->parent, $msg_adv->message);
+                    $result = $api_instance->addTextItemWithParent($msg_adv->conv_id ? $msg_adv->conv_id : $conv_id, $msg_adv->parent, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
                 }
                 else
                 {
                     global $hooks;
 
-                    $result = $api_instance->addTextItem($conv_id, $msg_adv->message);
+                    $result = $api_instance->addTextItem($conv_id, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
 
                     $hooks->do_action(ACTION_PARENT_ID, $msg_adv->id, $result['item_id']);
 
@@ -137,6 +137,7 @@ if(!function_exists('circuit_bot'))
     {
         public $parent;
         public $message;
+        public $title;
         public $id;
         public $conv_id;
 
