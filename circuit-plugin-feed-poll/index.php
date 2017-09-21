@@ -37,6 +37,8 @@ if(!function_exists('wakeup_feed'))
             $auth_url = $my_feed['auth_url'];
             $conv_id = null;
 
+            echo 'Feed: ' . $feed_url, PHP_EOL;
+
             if(isset($my_feed['conv_id']))
             {
                 $conv_id = $my_feed['conv_id'];
@@ -75,11 +77,11 @@ if(!function_exists('wakeup_feed'))
             $mri = $storage->retrieve($feed_mri_token);
             $id0 = $feed->get_item(0)->get_id();
 
-            if($id0 != $mri)
+            if($id0 != $mri || hooks_only($config)) // ignore for hooks_only to have some output
             {
                 foreach ($feed->get_items() as $item)
                 {
-                    if($item->get_id() == $mri) break;
+                    if($item->get_id() == $mri && !hooks_only($config)) break; // same
 
                     $link = $item->get_link(0);
 
@@ -96,13 +98,19 @@ if(!function_exists('wakeup_feed'))
                         $mes->conv_id = $conv_id;
                     }
 
-                    circuit_send_message_adv($mes);
+                    circuit_send_message_adv($mes); // has no effect with hooks_only
                 }
                 $mri = $id0;
             }
-            // else nothing to do
+            else
+            {
+                echo 'Feed: no new items, nothing to do.', PHP_EOL;
+            }
 
-            $storage->store($feed_mri_token, $mri);
+            if(!hooks_only($config))
+            {
+                $storage->store($feed_mri_token, $mri);
+            }
         }
     }
 

@@ -4,15 +4,6 @@ if(!function_exists('example_wakeup'))
 {
     global $hooks;
 
-    /**
-     * Record a message to our plugin state
-     */
-    function example_mrec($mes)
-    {
-        global $plugin_states;
-        $plugin_states['ciis0.example']['msg_ids'][] = $mes->id;
-    }
-
     $hooks->add_action(ACTION_PLG_INIT, 'example_init');
 
     function example_init()
@@ -46,7 +37,7 @@ if(!function_exists('example_wakeup'))
         global $plugin_states;
 
         $msg = new AdvancedMessage('Hello?');
-        example_mrec($msg); // to be able to determine if it's ours, see example_parent_id
+        $msg->record_id('ciis0.example'); // to be able to determine if it's ours, see example_parent_id
 
         circuit_send_message_adv($msg);
     }
@@ -70,7 +61,7 @@ if(!function_exists('example_wakeup'))
         global $plugin_states;
 
         echo "Message with ID ${message_id} is ${parent_id}.", PHP_EOL,
-            'It\'s ' . (in_array($message_id, $plugin_states['ciis0.example']['msg_ids']) ? 'not ' : '' ) . 'ours.', PHP_EOL;
+            'It\'s ' . (in_array($message_id, $plugin_states['ciis0.example']['msg_ids']) ? '' : 'not ' ) . 'ours.', PHP_EOL;
     }
 
     function example_wakeup_advanced_w_title()
@@ -79,8 +70,7 @@ if(!function_exists('example_wakeup'))
 
         $mes = new AdvancedMessage('Hello.');
         $mes->title = 'Title.';
-
-        example_mrec($mes);
+        $mes->record_id('ciis0.example');
 
         circuit_send_message_adv($mes);
     }

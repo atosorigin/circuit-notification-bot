@@ -158,5 +158,14 @@ if(!function_exists('circuit_bot'))
             $this->parent  = $parent;
         }
 
+        /**
+         * Record an ID in plugins' state for later use.
+         */
+        public function record_id($plg, $key = 'msg_ids')
+        {
+            global $plugin_states;
+            $plugin_states[$plg][$key][] = $this->id; // the array should be initialized by plugin
+        }
+
     }
 }
