@@ -6,8 +6,8 @@ if(!function_exists('circuit_bot'))
 {
     define('TOKEN_ENDPOINT', 'https://eu.yourcircuit.com/oauth/token');
 
-    define('FILTER_WAKEUP', 'wakeup');
-    define('FILTER_WAKEUP_ADV', 'wakeup_advanced');
+    define('ACTION_WAKEUP', 'wakeup');
+    define('ACTION_WAKEUP_ADV', 'wakeup_advanced');
 
     define('ACTION_PLG_INIT', 'init_plugins');
     define('ACTION_PARENT_ID', 'parent_id');
@@ -75,8 +75,8 @@ if(!function_exists('circuit_bot'))
 
         echo 'Running hooks', PHP_EOL;
 
-        $wakeup = $hooks->apply_filters(FILTER_WAKEUP, []);
-        $wakeup_advanced = $hooks->apply_filters(FILTER_WAKEUP_ADV, []);
+        $wakeup = $hooks->do_action(ACTION_WAKEUP);
+        $wakeup_advanced = $hooks->do_action(ACTION_WAKEUP_ADV);
 
         echo 'Done.', PHP_EOL;
 
@@ -85,56 +85,7 @@ if(!function_exists('circuit_bot'))
             echo 'Ran only hooks, as requested by $config[\'hooks_only\']', PHP_EOL,
                 'hooks:', PHP_EOL;
             print_r($hooks);
-
-            echo 'wakeup result', PHP_EOL;
-            print_r($wakeup);
-
-            echo 'wakeup_advanced result', PHP_EOL;
-            print_r($wakeup_advanced);
-
             return;
-        }
-
-        $conv_id = $config['conv_id'];
-        $api_instance = new Swagger\Client\Api\MessagingBasicApi();
-
-        foreach($wakeup as $key => $content)
-        {
-            try
-            {
-                print_conv_item($result = $api_instance->addTextItem($conv_id, $content));
-            }
-            catch (Exception $e)
-            {
-                echo 'Exception when calling MessagingBasicApi->addTextItem: ', $e->getMessage(), PHP_EOL;
-            }
-
-        }
-
-        foreach($wakeup_advanced as $msg_adv)
-        {
-            try
-            {
-                if($msg_adv->parent)
-                {
-                    $result = $api_instance->addTextItemWithParent($msg_adv->conv_id ? $msg_adv->conv_id : $conv_id, $msg_adv->parent, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
-                }
-                else
-                {
-                    global $hooks;
-
-                    $result = $api_instance->addTextItem($conv_id, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
-
-                    $hooks->do_action(ACTION_PARENT_ID, $msg_adv->id, $result['item_id']);
-
-                }
-                print_conv_item($result);
-            }
-            catch (Exception $e)
-            {
-                echo 'Exception when calling MessagingBasicApi->addTextItem/addTextItemWithParent: ', $e->getMessage(), PHP_EOL;
-            }
-
         }
 
     }

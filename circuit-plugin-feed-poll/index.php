@@ -18,9 +18,9 @@ if(!function_exists('wakeup_feed'))
         ];
     }
 
-    $hooks->add_filter('wakeup_advanced', 'wakeup_feed');
+    $hooks->add_action('wakeup_advanced', 'wakeup_feed');
 
-    function wakeup_feed($ary)
+    function wakeup_feed()
     {
 
         global $config;
@@ -104,7 +104,6 @@ if(!function_exists('wakeup_feed'))
 
             $storage->store($feed_mri_token, $mri);
         }
-        return $ary;
     }
 
     $hooks->add_action(ACTION_PARENT_ID, 'parent_id_feed', 10 /* default priority */, 2);
