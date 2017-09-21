@@ -70,7 +70,7 @@ if(!function_exists('example_wakeup'))
         global $plugin_states;
 
         echo "Message with ID ${message_id} is ${parent_id}.", PHP_EOL,
-            'It\'s ' . (in_array($message_id, $plugin_states['ciis0.example']['msg_ids']) ? 'not ' : '' ) . 'ours.', PHP_EOL;
+            'It\'s ' . (in_array($message_id, $plugin_states['ciis0.example']['msg_ids']) ? '' : 'not ' ) . 'ours.', PHP_EOL;
     }
 
     function example_wakeup_advanced_w_title()
