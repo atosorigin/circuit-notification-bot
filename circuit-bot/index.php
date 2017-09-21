@@ -88,7 +88,7 @@ if(!function_exists('circuit_bot'))
             return;
         }
 
-        $conv_id = $config['conId'];
+        $conv_id = $config['conv_id'];
         $api_instance = new Swagger\Client\Api\MessagingBasicApi();
 
         foreach($wakeup as $key => $content)
