@@ -6,11 +6,23 @@ if(!function_exists('circuit_bot'))
 {
     define('TOKEN_ENDPOINT', 'https://eu.yourcircuit.com/oauth/token');
 
-    define('FILTER_WAKEUP', 'wakeup');
-    define('FILTER_WAKEUP_ADV', 'wakeup_advanced');
+    define('ACTION_WAKEUP', 'wakeup');
+    define('ACTION_WAKEUP_ADV', 'wakeup_advanced');
 
     define('ACTION_PLG_INIT', 'init_plugins');
     define('ACTION_PARENT_ID', 'parent_id');
+
+    function print_conv_item($conv_item)
+    {
+        echo 'Message...', PHP_EOL,
+            'ID      ', $conv_item['item_id'], PHP_EOL,
+            'Content ', $conv_item['text']['content'], PHP_EOL, PHP_EOL;
+    }
+
+    function hooks_only($config)
+    {
+        return isset($config['hooks_only']) && $config['hooks_only'];
+    }
 
     function circuit_bot($the_config)
     {
@@ -20,14 +32,7 @@ if(!function_exists('circuit_bot'))
 
         $config = $the_config; // make config available in filters and actions
         $plugin_states = [];
-        $hooks_only = isset($config['hooks_only']) && $config['hooks_only'];
-
-        function print_conv_item($conv_item)
-        {
-            echo 'Message...', PHP_EOL,
-                'ID      ', $conv_item['item_id'], PHP_EOL,
-                'Content ', $conv_item['text']['content'], PHP_EOL, PHP_EOL;
-        }
+        $hooks_only = hooks_only($config);
 
         if(isset($config['client']) && isset($config['client']['id']) && isset($config['client']['secret']))
         {
@@ -62,14 +67,16 @@ if(!function_exists('circuit_bot'))
             die('Missing OAuth Client-ID and/or Client secret!');
         }
 
+        $config['api.messaging.basic'] = new Swagger\Client\Api\MessagingBasicApi;
+
         echo 'Initializing plugins', PHP_EOL;
 
         $hooks->do_action(ACTION_PLG_INIT);
 
         echo 'Running hooks', PHP_EOL;
 
-        $wakeup = $hooks->apply_filters(FILTER_WAKEUP, []);
-        $wakeup_advanced = $hooks->apply_filters(FILTER_WAKEUP_ADV, []);
+        $wakeup = $hooks->do_action(ACTION_WAKEUP);
+        $wakeup_advanced = $hooks->do_action(ACTION_WAKEUP_ADV);
 
         echo 'Done.', PHP_EOL;
 
@@ -78,58 +85,59 @@ if(!function_exists('circuit_bot'))
             echo 'Ran only hooks, as requested by $config[\'hooks_only\']', PHP_EOL,
                 'hooks:', PHP_EOL;
             print_r($hooks);
-
-            echo 'wakeup result', PHP_EOL;
-            print_r($wakeup);
-
-            echo 'wakeup_advanced result', PHP_EOL;
-            print_r($wakeup_advanced);
-
             return;
         }
 
-        $conv_id = $config['conId'];
-        $api_instance = new Swagger\Client\Api\MessagingBasicApi();
+    }
 
-        foreach($wakeup as $key => $content)
+    function circuit_send_message($content)
+    {
+        global $config;
+
+        if(hooks_only($config)) return;
+
+        try
         {
-            try
-            {
-                print_conv_item($result = $api_instance->addTextItem($conv_id, $content));
-            }
-            catch (Exception $e)
-            {
-                echo 'Exception when calling MessagingBasicApi->addTextItem: ', $e->getMessage(), PHP_EOL;
-            }
-
+            print_conv_item($config['api.messaging.basic']->addTextItem($config['conv_id'], $content));
         }
-
-        foreach($wakeup_advanced as $msg_adv)
+        catch (Exception $e)
         {
-            try
-            {
-                if($msg_adv->parent)
-                {
-                    $result = $api_instance->addTextItemWithParent($msg_adv->conv_id ? $msg_adv->conv_id : $conv_id, $msg_adv->parent, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
-                }
-                else
-                {
-                    global $hooks;
-
-                    $result = $api_instance->addTextItem($conv_id, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
-
-                    $hooks->do_action(ACTION_PARENT_ID, $msg_adv->id, $result['item_id']);
-
-                }
-                print_conv_item($result);
-            }
-            catch (Exception $e)
-            {
-                echo 'Exception when calling MessagingBasicApi->addTextItem/addTextItemWithParent: ', $e->getMessage(), PHP_EOL;
-            }
-
+            echo 'Exception when calling MessagingBasicApi->addTextItem: ', $e->getMessage(), PHP_EOL;
         }
+    }
 
+    function circuit_send_message_adv(AdvancedMessage $msg_adv)
+    {
+
+        global $config;
+        global $hooks;
+
+        if(hooks_only($config)) return;
+
+        $api_instance = $config['api.messaging.basic'];
+        $conv_id = $config['conv_id'];
+
+        try
+        {
+            if($msg_adv->parent)
+            {
+                $result = $api_instance->addTextItemWithParent($msg_adv->conv_id ? $msg_adv->conv_id : $conv_id, $msg_adv->parent, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
+            }
+            else
+            {
+                global $hooks;
+
+                $result = $api_instance->addTextItem($conv_id, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
+
+                $hooks->do_action(ACTION_PARENT_ID, $msg_adv->id, $result['item_id']);
+
+            }
+            print_conv_item($result);
+        }
+        catch (Exception $e)
+        {
+            echo 'Exception when calling MessagingBasicApi->addTextItem/addTextItemWithParent: ', $e->getMessage(), PHP_EOL;
+        }
     }
 
     // This is mainly a structure, not an encapsulated container.

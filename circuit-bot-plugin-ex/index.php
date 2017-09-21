@@ -24,47 +24,41 @@ if(!function_exists('example_wakeup'))
         ];
     }
 
-    $hooks->add_filter('wakeup', 'example_wakeup');
+    $hooks->add_action('wakeup', 'example_wakeup');
 
-    function example_wakeup($ary){
-        $ary[] = 'External filter';
-        return $ary;
+    function example_wakeup(){
+        circuit_send_message("External filter");
     }
 
-    $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_w_parent');
-    $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_wo_parent');
-    $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_w_conv_id');
-    $hooks->add_filter('wakeup_advanced', 'example_wakeup_advanced_w_title');
+    $hooks->add_action('wakeup_advanced', 'example_wakeup_advanced_w_parent');
+    $hooks->add_action('wakeup_advanced', 'example_wakeup_advanced_wo_parent');
+    $hooks->add_action('wakeup_advanced', 'example_wakeup_advanced_w_conv_id');
+    $hooks->add_action('wakeup_advanced', 'example_wakeup_advanced_w_title');
 
-    function example_wakeup_advanced_w_parent($ary)
+    function example_wakeup_advanced_w_parent()
     {
         global $config;
-
-        $ary[] = new AdvancedMessage('Hello!', $config['plugins']['example']['parent_id']);
-        return $ary;
+        circuit_send_message_adv(new AdvancedMessage('Hello!', $config['plugins']['example']['parent_id']));
     }
 
-    function example_wakeup_advanced_wo_parent($ary)
+    function example_wakeup_advanced_wo_parent()
     {
         global $plugin_states;
 
         $msg = new AdvancedMessage('Hello?');
         example_mrec($msg); // to be able to determine if it's ours, see example_parent_id
 
-        $ary[] = $msg;
-        return $ary;
+        circuit_send_message_adv($msg);
     }
 
-    function example_wakeup_advanced_w_conv_id($ary)
+    function example_wakeup_advanced_w_conv_id()
     {
         global $config;
 
         $mes = new AdvancedMessage('Hello!');
         $mes->conv_id = $config['plugins']['example']['conv_id'];
 
-        $ary[] = $mes;
-
-        return $ary;
+        circuit_send_message_adv($mes);
     }
 
     // add_action(action, callback, priority, num_args), priority defaults to 10
@@ -79,7 +73,7 @@ if(!function_exists('example_wakeup'))
             'It\'s ' . (in_array($message_id, $plugin_states['ciis0.example']['msg_ids']) ? 'not ' : '' ) . 'ours.', PHP_EOL;
     }
 
-    function example_wakeup_advanced_w_title($ary)
+    function example_wakeup_advanced_w_title()
     {
         global $plugin_states;
 
@@ -88,8 +82,7 @@ if(!function_exists('example_wakeup'))
 
         example_mrec($mes);
 
-        $ary[] = $mes;
-        return $ary;
+        circuit_send_message_adv($mes);
     }
 
 }
