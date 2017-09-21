@@ -12,6 +12,13 @@ if(!function_exists('circuit_bot'))
     define('ACTION_PLG_INIT', 'init_plugins');
     define('ACTION_PARENT_ID', 'parent_id');
 
+    function print_conv_item($conv_item)
+    {
+        echo 'Message...', PHP_EOL,
+            'ID      ', $conv_item['item_id'], PHP_EOL,
+            'Content ', $conv_item['text']['content'], PHP_EOL, PHP_EOL;
+    }
+
     function circuit_bot($the_config)
     {
         global $hooks;
@@ -21,13 +28,6 @@ if(!function_exists('circuit_bot'))
         $config = $the_config; // make config available in filters and actions
         $plugin_states = [];
         $hooks_only = isset($config['hooks_only']) && $config['hooks_only'];
-
-        function print_conv_item($conv_item)
-        {
-            echo 'Message...', PHP_EOL,
-                'ID      ', $conv_item['item_id'], PHP_EOL,
-                'Content ', $conv_item['text']['content'], PHP_EOL, PHP_EOL;
-        }
 
         if(isset($config['client']) && isset($config['client']['id']) && isset($config['client']['secret']))
         {
@@ -61,6 +61,8 @@ if(!function_exists('circuit_bot'))
         {
             die('Missing OAuth Client-ID and/or Client secret!');
         }
+
+        $config['api.messaging.basic'] = new Swagger\Client\Api\MessagingBasicApi;
 
         echo 'Initializing plugins', PHP_EOL;
 
