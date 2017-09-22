@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9427366abe5427ffda4d4caa026ac897",
+    "content-hash": "827972d6aac2fdde1f1ed49efbb57345",
     "packages": [
         {
             "name": "adoy/oauth2",
@@ -87,17 +87,17 @@
         },
         {
             "name": "ciis0/circuit-bot",
-            "version": "dev-master",
+            "version": "1.0.0",
             "dist": {
                 "type": "path",
-                "url": "../circuit-bot",
-                "reference": "4e0cba7787f5761e9e21d1acb5c5c128975314cf",
+                "url": "../../lib/bot",
+                "reference": "c10ce25915ddfa5eadef333d80b939f579cff8ba",
                 "shasum": null
             },
             "require": {
                 "adoy/oauth2": "^1.3",
                 "bainternet/php-hooks": "^1.0",
-                "circuit/circuit-php-api": "*",
+                "ciis0/circuit-php-api": "1.0.0",
                 "icanboogie/storage": "^1.0"
             },
             "type": "project",
@@ -115,64 +115,40 @@
             "description": "Sends status messages to circuit conversations."
         },
         {
-            "name": "ciis0/circuit-bot-plugin-ex",
-            "version": "dev-master",
-            "dist": {
-                "type": "path",
-                "url": "../circuit-bot-plugin-ex",
-                "reference": "8a8166fda4e463f75a52780b337e1f46985466b5",
-                "shasum": null
-            },
-            "require": {
-                "ciis0/circuit-bot": "dev-master"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "index.php"
-                ]
-            },
-            "authors": [
-                {
-                    "name": "Christoph Schulz",
-                    "email": "christoph.2.schulz@atos.net"
-                }
-            ],
-            "description": "Circuit bot example plugin"
-        },
-        {
-            "name": "ciis0/circuit-bot-quick",
-            "version": "dev-master",
-            "dist": {
-                "type": "path",
-                "url": "../circuit-bot-quick",
-                "reference": "fb0bc4129ebf11df54c7bf8de3655cabe7c05678",
-                "shasum": null
-            },
-            "require": {
-                "ciis0/circuit-bot": "dev-master"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "index.php"
-                ]
-            },
-            "authors": [
-                {
-                    "name": "Christoph Schulz",
-                    "email": "christoph.2.schulz@atos.net"
-                }
-            ],
-            "description": "Most basic Circuit bot. Simply loads configuration from config.php from requiring project."
-        },
-        {
-            "name": "circuit/circuit-php-api",
+            "name": "ciis0/circuit-bot-plugin-feed-poll",
             "version": "1.0.0",
             "dist": {
                 "type": "path",
-                "url": "../circuit-api",
-                "reference": "7707cd02bed4bdd1c853b78a7384f22d84952af6",
+                "url": "../../lib/plugin-feed-poll",
+                "reference": "2d2a5d6d54f70cbdd36f22a6cee1b2047ca31605",
+                "shasum": null
+            },
+            "require": {
+                "ciis0/circuit-bot": "^1.0",
+                "guzzlehttp/guzzle": "^5.3",
+                "simplepie/simplepie": "^1.5"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "index.php"
+                ]
+            },
+            "authors": [
+                {
+                    "name": "Christoph Schulz",
+                    "email": "christoph.2.schulz@atos.net"
+                }
+            ],
+            "description": "Circuit bot plugin for posting new messages from a feed"
+        },
+        {
+            "name": "ciis0/circuit-php-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../../lib/api",
+                "reference": "7493880820374ad19adf70b1c04b7a8dc21096ce",
                 "shasum": null
             },
             "require": {
@@ -216,21 +192,174 @@
             ]
         },
         {
-            "name": "icanboogie/storage",
-            "version": "v1.0.1",
+            "name": "guzzlehttp/guzzle",
+            "version": "5.3.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ICanBoogie/Storage.git",
-                "reference": "a525be499ab476b1358136032de4d00c7500617e"
+                "url": "https://github.com/guzzle/guzzle.git",
+                "reference": "70f1fa53b71c4647bf2762c09068a95f77e12fb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ICanBoogie/Storage/zipball/a525be499ab476b1358136032de4d00c7500617e",
-                "reference": "a525be499ab476b1358136032de4d00c7500617e",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/70f1fa53b71c4647bf2762c09068a95f77e12fb8",
+                "reference": "70f1fa53b71c4647bf2762c09068a95f77e12fb8",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/ringphp": "^1.1",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "phpunit/phpunit": "^4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Guzzle is a PHP HTTP client library and framework for building RESTful web service clients",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "client",
+                "curl",
+                "framework",
+                "http",
+                "http client",
+                "rest",
+                "web service"
+            ],
+            "time": "2016-07-15T19:28:39+00:00"
+        },
+        {
+            "name": "guzzlehttp/ringphp",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/RingPHP.git",
+                "reference": "dbbb91d7f6c191e5e405e900e3102ac7f261bc0b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/RingPHP/zipball/dbbb91d7f6c191e5e405e900e3102ac7f261bc0b",
+                "reference": "dbbb91d7f6c191e5e405e900e3102ac7f261bc0b",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/streams": "~3.0",
+                "php": ">=5.4.0",
+                "react/promise": "~2.0"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "ext-curl": "Guzzle will use specific adapters if cURL is present"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Ring\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
+            "time": "2015-05-20T03:37:09+00:00"
+        },
+        {
+            "name": "guzzlehttp/streams",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/streams.git",
+                "reference": "47aaa48e27dae43d39fc1cea0ccf0d84ac1a2ba5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/streams/zipball/47aaa48e27dae43d39fc1cea0ccf0d84ac1a2ba5",
+                "reference": "47aaa48e27dae43d39fc1cea0ccf0d84ac1a2ba5",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Stream\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Provides a simple abstraction over streams of data",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "Guzzle",
+                "stream"
+            ],
+            "time": "2014-10-12T19:18:40+00:00"
+        },
+        {
+            "name": "icanboogie/storage",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ICanBoogie/Storage.git",
+                "reference": "514927382ec0ddc92dd2b60c631d97b87bb7dc89"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ICanBoogie/Storage/zipball/514927382ec0ddc92dd2b60c631d97b87bb7dc89",
+                "reference": "514927382ec0ddc92dd2b60c631d97b87bb7dc89",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
             },
             "type": "library",
             "autoload": {
@@ -250,22 +379,126 @@
                     "role": "Developer"
                 }
             ],
-            "description": "An API to store values.",
+            "description": "Store and retrieve values, using different/multiple storage backends.",
             "homepage": "http://icanboogie.org/",
             "keywords": [
                 "cache",
-                "storage"
+                "retrieve",
+                "store"
             ],
-            "time": "2015-02-27T09:17:14+00:00"
+            "time": "2015-08-24T18:26:30+00:00"
+        },
+        {
+            "name": "react/promise",
+            "version": "v2.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/promise.git",
+                "reference": "62785ae604c8d69725d693eb370e1d67e94c4053"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/62785ae604c8d69725d693eb370e1d67e94c4053",
+                "reference": "62785ae604c8d69725d693eb370e1d67e94c4053",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "React\\Promise\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Sorgalla",
+                    "email": "jsorgalla@gmail.com"
+                }
+            ],
+            "description": "A lightweight implementation of CommonJS Promises/A for PHP",
+            "keywords": [
+                "promise",
+                "promises"
+            ],
+            "time": "2017-03-25T12:08:31+00:00"
+        },
+        {
+            "name": "simplepie/simplepie",
+            "version": "1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/simplepie/simplepie.git",
+                "reference": "5de5551953f95feef12cf355a7a26a70f94aa3ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/5de5551953f95feef12cf355a7a26a70f94aa3ab",
+                "reference": "5de5551953f95feef12cf355a7a26a70f94aa3ab",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4 || ~5"
+            },
+            "suggest": {
+                "mf2/mf2": "Microformat module that allows for parsing HTML for microformats"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SimplePie": "library"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ryan Parman",
+                    "homepage": "http://ryanparman.com/",
+                    "role": "Creator, alumnus developer"
+                },
+                {
+                    "name": "Geoffrey Sneddon",
+                    "homepage": "http://gsnedders.com/",
+                    "role": "Alumnus developer"
+                },
+                {
+                    "name": "Ryan McCue",
+                    "email": "me@ryanmccue.info",
+                    "homepage": "http://ryanmccue.info/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple Atom/RSS parsing library for PHP",
+            "homepage": "http://simplepie.org/",
+            "keywords": [
+                "atom",
+                "feeds",
+                "rss"
+            ],
+            "time": "2017-04-17T07:29:31+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": {
-        "ciis0/circuit-bot-plugin-ex": 20,
-        "ciis0/circuit-bot-quick": 20
-    },
+    "minimum-stability": "stable",
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

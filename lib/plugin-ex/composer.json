@@ -13,11 +13,11 @@
             "email": "christoph.2.schulz@atos.net"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
-        "ciis0/circuit-bot": "dev-master"
+        "ciis0/circuit-bot": "^1.0"
     },
     "autoload":{
         "files": ["index.php"]
-    }
+    },
+    "version": "1.0.0"
 }

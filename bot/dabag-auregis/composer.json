@@ -4,7 +4,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "../lib/*"
+            "url": "../../lib/*"
         }
     ],
     "authors": [
@@ -13,9 +13,7 @@
             "email": "christoph.2.schulz@atos.net"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
-        "ciis0/circuit-bot-plugin-ex": "dev-master",
-        "ciis0/circuit-bot-quick": "dev-master"
+        "ciis0/circuit-bot-plugin-feed-poll": "^1.0"
     }
 }
