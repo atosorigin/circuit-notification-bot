@@ -1,5 +1,5 @@
 {
-    "name": "ciis0/circuit-plugin-feed-poll",
+    "name": "ciis0/circuit-bot-plugin-feed-poll",
     "description": "Circuit bot plugin for posting new messages from a feed",
     "repositories": [
         {
@@ -13,14 +13,13 @@
             "email": "christoph.2.schulz@atos.net"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
-        "guzzlehttp/guzzle": "5.3.x-dev",
-        "simplepie/simplepie": "dev-master"
+        "ciis0/circuit-bot": "^1.0",
+        "guzzlehttp/guzzle": "^5.3",
+        "simplepie/simplepie": "^1.5"
     },
     "autoload": {
         "files": [ "index.php" ]
     },
-    "require-dev": {
-    }
+    "version": "1.0.0"
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9427366abe5427ffda4d4caa026ac897",
+    "content-hash": "2dc492ae20e8e8916adb4a00c11e90ac",
     "packages": [
         {
             "name": "adoy/oauth2",
@@ -86,93 +86,12 @@
             "time": "2015-09-07T12:11:17+00:00"
         },
         {
-            "name": "ciis0/circuit-bot",
-            "version": "dev-master",
-            "dist": {
-                "type": "path",
-                "url": "../circuit-bot",
-                "reference": "4e0cba7787f5761e9e21d1acb5c5c128975314cf",
-                "shasum": null
-            },
-            "require": {
-                "adoy/oauth2": "^1.3",
-                "bainternet/php-hooks": "^1.0",
-                "circuit/circuit-php-api": "*",
-                "icanboogie/storage": "^1.0"
-            },
-            "type": "project",
-            "autoload": {
-                "files": [
-                    "index.php"
-                ]
-            },
-            "authors": [
-                {
-                    "name": "Christoph Schulz",
-                    "email": "christoph.2.schulz@atos.net"
-                }
-            ],
-            "description": "Sends status messages to circuit conversations."
-        },
-        {
-            "name": "ciis0/circuit-bot-plugin-ex",
-            "version": "dev-master",
-            "dist": {
-                "type": "path",
-                "url": "../circuit-bot-plugin-ex",
-                "reference": "8a8166fda4e463f75a52780b337e1f46985466b5",
-                "shasum": null
-            },
-            "require": {
-                "ciis0/circuit-bot": "dev-master"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "index.php"
-                ]
-            },
-            "authors": [
-                {
-                    "name": "Christoph Schulz",
-                    "email": "christoph.2.schulz@atos.net"
-                }
-            ],
-            "description": "Circuit bot example plugin"
-        },
-        {
-            "name": "ciis0/circuit-bot-quick",
-            "version": "dev-master",
-            "dist": {
-                "type": "path",
-                "url": "../circuit-bot-quick",
-                "reference": "fb0bc4129ebf11df54c7bf8de3655cabe7c05678",
-                "shasum": null
-            },
-            "require": {
-                "ciis0/circuit-bot": "dev-master"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "index.php"
-                ]
-            },
-            "authors": [
-                {
-                    "name": "Christoph Schulz",
-                    "email": "christoph.2.schulz@atos.net"
-                }
-            ],
-            "description": "Most basic Circuit bot. Simply loads configuration from config.php from requiring project."
-        },
-        {
-            "name": "circuit/circuit-php-api",
+            "name": "ciis0/circuit-php-api",
             "version": "1.0.0",
             "dist": {
                 "type": "path",
-                "url": "../circuit-api",
-                "reference": "7707cd02bed4bdd1c853b78a7384f22d84952af6",
+                "url": "../api",
+                "reference": "7493880820374ad19adf70b1c04b7a8dc21096ce",
                 "shasum": null
             },
             "require": {
@@ -217,20 +136,20 @@
         },
         {
             "name": "icanboogie/storage",
-            "version": "v1.0.1",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ICanBoogie/Storage.git",
-                "reference": "a525be499ab476b1358136032de4d00c7500617e"
+                "reference": "514927382ec0ddc92dd2b60c631d97b87bb7dc89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ICanBoogie/Storage/zipball/a525be499ab476b1358136032de4d00c7500617e",
-                "reference": "a525be499ab476b1358136032de4d00c7500617e",
+                "url": "https://api.github.com/repos/ICanBoogie/Storage/zipball/514927382ec0ddc92dd2b60c631d97b87bb7dc89",
+                "reference": "514927382ec0ddc92dd2b60c631d97b87bb7dc89",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0"
+                "php": ">=5.5.0"
             },
             "type": "library",
             "autoload": {
@@ -250,22 +169,20 @@
                     "role": "Developer"
                 }
             ],
-            "description": "An API to store values.",
+            "description": "Store and retrieve values, using different/multiple storage backends.",
             "homepage": "http://icanboogie.org/",
             "keywords": [
                 "cache",
-                "storage"
+                "retrieve",
+                "store"
             ],
-            "time": "2015-02-27T09:17:14+00:00"
+            "time": "2015-08-24T18:26:30+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": {
-        "ciis0/circuit-bot-plugin-ex": 20,
-        "ciis0/circuit-bot-quick": 20
-    },
+    "minimum-stability": "stable",
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

@@ -1,5 +1,5 @@
 .php_cs
-circuit-api
+/lib/api
 config.php
 vendor/
 token_*

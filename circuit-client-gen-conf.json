@@ -1,6 +1,6 @@
 {
-    "packagePath": "circuit-api",
-    "gitUserId": "circuit",
+    "packagePath": "api",
+    "gitUserId": "ciis0",
     "gitRepoId": "circuit-php-api",
     "artifactVersion": "1.0.0"
 }
