@@ -24,6 +24,6 @@ $CURL $(\
     ) > $ziptmp
 
 unzip $ziptmp
-mv php-client/* .
+mv php-client/* lib
 
 rm -rf php-client $ziptmp
