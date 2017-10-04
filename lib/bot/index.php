@@ -90,11 +90,26 @@ if(!function_exists('circuit_bot'))
 
     }
 
+    function circuit_message_truncate($msg)
+    {
+        if(strlen($msg_adv->message))
+        {
+            $toolongmsg = '...';
+            return substr($msg, 0, 2048 - strlen($toolongmsg)) . $toolongmsg;
+        }
+        else
+        {
+            return $msg;
+        }
+    }
+
     function circuit_send_message($content)
     {
         global $config;
 
         if(hooks_only($config)) return;
+
+        $content = circuit_message_truncate($content);
 
         try
         {
@@ -117,17 +132,19 @@ if(!function_exists('circuit_bot'))
         $api_instance = $config['api.messaging.basic'];
         $conv_id = $config['conv_id'];
 
+        $content = circuit_message_truncate($msg_adv->message);
+
         try
         {
             if($msg_adv->parent)
             {
-                $result = $api_instance->addTextItemWithParent($msg_adv->conv_id ? $msg_adv->conv_id : $conv_id, $msg_adv->parent, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
+                $result = $api_instance->addTextItemWithParent($msg_adv->conv_id ? $msg_adv->conv_id : $conv_id, $msg_adv->parent, $content, [ /* attachments */ ], $msg_adv->title);
             }
             else
             {
                 global $hooks;
 
-                $result = $api_instance->addTextItem($conv_id, $msg_adv->message, [ /* attachments */ ], $msg_adv->title);
+                $result = $api_instance->addTextItem($conv_id, $content, [ /* attachments */ ], $msg_adv->title);
 
                 $hooks->do_action(ACTION_PARENT_ID, $msg_adv->id, $result['item_id']);
 
