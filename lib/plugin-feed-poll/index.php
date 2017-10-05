@@ -74,6 +74,12 @@ if(!function_exists('wakeup_feed'))
             $feed->set_raw_data((string) ($response->getBody()));
             $feed->init();
 
+            if($feed->get_item_quantity() == 0)
+            {
+                echo 'Feed: Empty. Nothing to do.', PHP_EOL;
+                continue;
+            }
+
             $mri = $storage->retrieve($feed_mri_token);
             $id0 = $feed->get_item(0)->get_id();
             $skip = !hooks_only($config); // by default expands to true; for more output when hooks_only is enabled
