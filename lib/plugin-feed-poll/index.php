@@ -85,8 +85,16 @@ if(!function_exists('wakeup_feed'))
 
                     $link = $item->get_link(0);
 
+                    $patterns = [
+                        '/\\s+/', // circuit does not like line breaks
+                    ];
+
+                    $replacements = [
+                        ' ',
+                    ];
+
                     $mes = new AdvancedMessage(
-                        preg_replace('/\\s+/', ' ', $item->get_description()), // circuit does not like line breaks
+                        preg_replace($patterns, $replacements, $item->get_description()),
                         $storage->retrieve('ltp_' . sha1($link)) // ltp link to parent
                     );
 
