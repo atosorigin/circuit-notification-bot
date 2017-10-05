@@ -86,9 +86,11 @@ if(!function_exists('wakeup_feed'))
                     $link = $item->get_link(0);
 
                     $mes = new AdvancedMessage(
-                        $item->get_title() . ': ' . preg_replace('/\\s+/', ' ', $item->get_description()), // circuit does not like line breaks
+                        preg_replace('/\\s+/', ' ', $item->get_description()), // circuit does not like line breaks
                         $storage->retrieve('ltp_' . sha1($link)) // ltp link to parent
                     );
+
+                    $mes->title = $item->get_title();
 
                     $my_state['msg_ids'][] = $mes->id;
                     $my_state['mtl'][$mes->id] = $link;
