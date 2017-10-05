@@ -76,7 +76,7 @@ if(!function_exists('wakeup_feed'))
 
             $mri = $storage->retrieve($feed_mri_token);
             $id0 = $feed->get_item(0)->get_id();
-            $skip = !hooks_only($config); // for more output when hooks_only is enabled
+            $skip = !hooks_only($config); // by default expands to true; for more output when hooks_only is enabled
 
             if($id0 != $mri || hooks_only($config)) // same
             {
@@ -86,6 +86,12 @@ if(!function_exists('wakeup_feed'))
 
                     if($skip && $item->get_id() == $mri)
                     {
+                        $skip = false;
+                        continue;
+                    }
+                    elseif($skip && $i == 0) // most recent item not found ...
+                    {
+                        $i = $feed->get_item_quantity()-1;
                         $skip = false;
                         continue;
                     }
