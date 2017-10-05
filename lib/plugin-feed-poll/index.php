@@ -87,10 +87,14 @@ if(!function_exists('wakeup_feed'))
 
                     $patterns = [
                         '/\\s+/', // circuit does not like line breaks
+                        '/<del>(.*?)<\\/del><ins>(.*?)<\\/ins>/',
+                        '/<ins>(.*?)<\\/ins>/',
                     ];
 
                     $replacements = [
                         ' ',
+                        '-(\1)+(\2)',
+                        '+(\1)'
                     ];
 
                     $mes = new AdvancedMessage(
