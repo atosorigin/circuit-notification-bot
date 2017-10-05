@@ -85,10 +85,24 @@ if(!function_exists('wakeup_feed'))
 
                     $link = $item->get_link(0);
 
+                    $patterns = [
+                        '/\\s+/', // circuit does not like line breaks
+                        '/<del>(.*?)<\\/del><ins>(.*?)<\\/ins>/',
+                        '/<ins>(.*?)<\\/ins>/',
+                    ];
+
+                    $replacements = [
+                        ' ',
+                        '-(\1)+(\2)',
+                        '+(\1)'
+                    ];
+
                     $mes = new AdvancedMessage(
-                        $item->get_title() . ': ' . preg_replace('/\\s+/', ' ', $item->get_description()), // circuit does not like line breaks
+                        preg_replace($patterns, $replacements, $item->get_description()),
                         $storage->retrieve('ltp_' . sha1($link)) // ltp link to parent
                     );
+
+                    $mes->title = $item->get_title();
 
                     $my_state['msg_ids'][] = $mes->id;
                     $my_state['mtl'][$mes->id] = $link;
