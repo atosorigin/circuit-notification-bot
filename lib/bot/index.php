@@ -92,10 +92,19 @@ if(!function_exists('circuit_bot'))
 
     function circuit_message_truncate($msg)
     {
-        if(strlen($msg_adv->message))
+        $maxlen = 2048;
+        $toolongmsg = '...';
+        $maxlen_real = 2048 - strlen($toolongmsg);
+
+        if(strlen($msg) > $maxlen)
         {
-            $toolongmsg = '...';
-            return substr($msg, 0, 2048 - strlen($toolongmsg)) . $toolongmsg;
+            $trunc = $msg;
+
+            for($i = $maxlen_real; $i > 0 && strlen($trunc) > 2048; $i--)
+            {
+                $trunc = Cake\Utility\Text::truncate($trunc, $i, [ 'ellipsis' => $toolongmsg, 'html' => true, 'exact' => false ]);
+            }
+            return $trunc;
         }
         else
         {
