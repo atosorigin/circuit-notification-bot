@@ -125,8 +125,26 @@ if(!function_exists('wakeup_feed'))
                         '+(\1)'
                     ];
 
+                    libxml_use_internal_errors(true); // prevent "invalid entity" warnings in php
+
+                    $content = Html2Text\Html2Text::convert($item->get_description());
+
+                    if(count(libxml_get_errors()) > 0)
+                    {
+                        echo 'Feed: There where libxml errors/warnings.', PHP_EOL;
+
+                        foreach(libxml_get_errors() as $error)
+                        {
+                            print_r($error);
+                        }
+                        echo PHP_EOL;
+                    }
+
+                    libxml_clear_errors();
+                    libxml_use_internal_errors(false);
+
                     $mes = new AdvancedMessage(
-                        preg_replace($patterns, $replacements, $item->get_description()),
+                        preg_replace($patterns, $replacements, $content),
                         $storage->retrieve('ltp_' . sha1($link)) // ltp link to parent
                     );
 

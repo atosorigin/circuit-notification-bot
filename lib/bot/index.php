@@ -163,6 +163,7 @@ if(!function_exists('circuit_bot'))
         catch (Exception $e)
         {
             echo 'Exception when calling MessagingBasicApi->addTextItem/addTextItemWithParent: ', $e->getMessage(), PHP_EOL;
+            echo 'Message was: ', PHP_EOL, $content, PHP_EOL, PHP_EOL;
         }
     }
 
