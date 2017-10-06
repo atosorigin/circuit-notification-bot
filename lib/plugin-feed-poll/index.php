@@ -84,10 +84,13 @@ if(!function_exists('wakeup_feed'))
             $id0 = $feed->get_item(0)->get_id();
             $skip = !hooks_only($config); // by default expands to true; for more output when hooks_only is enabled
 
+            echo 'Feed has ' . $feed->get_item_quantity() . ' items.', PHP_EOL;
+
             if($id0 != $mri || hooks_only($config)) // same
             {
                 for ($i = $feed->get_item_quantity()-1; $i >= 0; $i--)
                 {
+                    echo 'Item: ',$i, PHP_EOL;
                     $item = $feed->get_item($i);
 
                     if($skip && $item->get_id() == $mri)
@@ -97,8 +100,10 @@ if(!function_exists('wakeup_feed'))
                     }
                     elseif($skip && $i == 0) // most recent item not found ...
                     {
-                        $i = $feed->get_item_quantity()-1;
+                        $i = $feed->get_item_quantity();
                         $skip = false;
+
+                        echo 'mri not found', PHP_EOL;
                         continue;
                     }
                     elseif($skip)
