@@ -114,15 +114,17 @@ if(!function_exists('wakeup_feed'))
                     $link = $item->get_link(0);
 
                     $patterns = [
-                        '/\\s+/', // circuit does not like line breaks
+                        '/\n/', // circuit does not like line breaks
                         '/<del>(.*?)<\\/del><ins>(.*?)<\\/ins>/',
                         '/<ins>(.*?)<\\/ins>/',
+                        '/\[(.+?)\]\((.+?)\)/', // revert html2text links
                     ];
 
                     $replacements = [
-                        ' ',
+                        '<br/>',
                         '-(\1)+(\2)',
-                        '+(\1)'
+                        '+(\1)',
+                        '<a href="\2">\1</a>',
                     ];
 
                     libxml_use_internal_errors(true); // prevent "invalid entity" warnings in php
