@@ -4,8 +4,6 @@ use ICanBoogie\Storage\FileStorage;
 
 if(!function_exists('circuit_bot'))
 {
-    define('TOKEN_ENDPOINT', 'https://eu.yourcircuit.com/oauth/token');
-
     define('ACTION_WAKEUP', 'wakeup');
     define('ACTION_WAKEUP_ADV', 'wakeup_advanced');
 
@@ -34,6 +32,19 @@ if(!function_exists('circuit_bot'))
         $plugin_states = [];
         $hooks_only = hooks_only($config);
 
+        if(isset($config['host']))
+        {
+            echo 'Using custom host ', $config['host'], PHP_EOL;
+
+            define('TOKEN_ENDPOINT', $config['host'] . '/oauth/token');
+            Swagger\Client\Configuration::getDefaultConfiguration()->setHost($config['host'] . '/rest/v2');
+        }
+        else
+        {
+            define('TOKEN_ENDPOINT', 'https://eu.yourcircuit.com/oauth/token');
+        }
+
+
         if(isset($config['client']) && isset($config['client']['id']) && isset($config['client']['secret']))
         {
             $storage = new FileStorage(__DIR__);
@@ -53,7 +64,9 @@ if(!function_exists('circuit_bot'))
                     ->getAccessToken(TOKEN_ENDPOINT, 'client_credentials', ['scope' => 'ALL'])
                     ['result'];
 
-                $storage->store($token_key, $response, $response['expires_in'] - 10 /* just to be sure */);
+                $storage->store($token_key, $response, isset($response['expires_in']) ? $response['expires_in'] - 10 /* just to be sure */ : null);
+
+                print_r($response);
 
                 $token = $response['access_token'];
             }
