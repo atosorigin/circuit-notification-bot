@@ -2,6 +2,10 @@
 
 use ICanBoogie\Storage\FileStorage;
 
+use Swagger\Client;
+use Swagger\Client\Api;
+use Swagger\Client\ApiClient;
+
 if(!function_exists('circuit_bot'))
 {
     define('ACTION_WAKEUP', 'wakeup');
@@ -37,7 +41,7 @@ if(!function_exists('circuit_bot'))
             echo 'Using custom host ', $config['host'], PHP_EOL;
 
             define('TOKEN_ENDPOINT', $config['host'] . '/oauth/token');
-            Swagger\Client\Configuration::getDefaultConfiguration()->setHost($config['host'] . '/rest/v2');
+            Client\Configuration::getDefaultConfiguration()->setHost($config['host'] . '/rest/v2');
         }
         else
         {
@@ -72,7 +76,7 @@ if(!function_exists('circuit_bot'))
             }
 
             // Configure OAuth2 access token for authorization
-            Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken($token);
+            Client\Configuration::getDefaultConfiguration()->setAccessToken($token);
 
         }
         elseif(!$hooks_only)
@@ -80,7 +84,7 @@ if(!function_exists('circuit_bot'))
             die('Missing OAuth Client-ID and/or Client secret!');
         }
 
-        $config['api.messaging.basic'] = new Swagger\Client\Api\MessagingBasicApi;
+        $config['api.messaging.basic'] = new Api\MessagingBasicApi;
 
         echo 'Initializing plugins', PHP_EOL;
 
@@ -92,7 +96,7 @@ if(!function_exists('circuit_bot'))
         $wakeup_advanced = $hooks->do_action(ACTION_WAKEUP_ADV);
 
         try{
-            (new Swagger\Client\Api\UserManagementApi())->setUserPresence('AWAY', null, 'Sleeping');
+            (new Api\UserManagementApi())->setUserPresence('AWAY', null, 'Sleeping');
         }
         catch (Exception $e)
         {
@@ -221,12 +225,12 @@ if(!function_exists('circuit_bot'))
 
         echo "Veryfing token...", PHP_EOL;
 
-        $api_config = clone Swagger\Client\Configuration::getDefaultConfiguration();
+        $api_config = clone Client\Configuration::getDefaultConfiguration();
         $api_config->setAccessToken($token);
 
-        $api_client = new Swagger\Client\ApiClient($api_config);
+        $api_client = new ApiClient($api_config);
 
-        $user_api = new Swagger\Client\Api\UserManagementApi($api_client);
+        $user_api = new Api\UserManagementApi($api_client);
 
         try
         {
