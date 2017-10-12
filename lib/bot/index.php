@@ -40,7 +40,7 @@ if(!function_exists('circuit_bot'))
             $token_key = 'token_' . $config['client']['id'];
 
             // Try to reuse OAuth token, request new one if expired.
-            if($response = $storage->retrieve($token_key))
+            if(($response = $storage->retrieve($token_key)) && verify_token($response['access_token']))
             {
                 echo 'Token loaded', PHP_EOL;
                 $token = $response['access_token'];
@@ -192,6 +192,38 @@ if(!function_exists('circuit_bot'))
         {
             global $plugin_states;
             $plugin_states[$plg][$key][] = $this->id; // the array should be initialized by plugin
+        }
+
+    }
+
+    function verify_token($token){
+
+        echo "Veryfing token...", PHP_EOL;
+
+        $api_config = clone Swagger\Client\Configuration::getDefaultConfiguration();
+        $api_config->setAccessToken($token);
+
+        $api_client = new Swagger\Client\ApiClient($api_config);
+
+        $user_api = new Swagger\Client\Api\UserManagementApi($api_client);
+
+        try
+        {
+            $user_api->setUserPresence('AVAILABLE', null, 'Crunching data...');
+            return true;
+        }
+        catch(Exception $e)
+        {
+            if($e->getCode() == 401)
+            {
+                return false;
+            }
+            else
+            {
+                echo "Error accessing API: {$e->getMessage()}", PHP_EOL;
+                print_r($e);
+                exit(1);
+            }
         }
 
     }
