@@ -78,6 +78,14 @@ if(!function_exists('circuit_bot'))
         $wakeup = $hooks->do_action(ACTION_WAKEUP);
         $wakeup_advanced = $hooks->do_action(ACTION_WAKEUP_ADV);
 
+        try{
+            (new Swagger\Client\Api\UserManagementApi())->setUserPresence('AWAY', null, 'Sleeping');
+        }
+        catch (Exception $e)
+        {
+            echo 'Exception when setting presence: ', $e->getMessage(), PHP_EOL;
+        }
+
         echo 'Done.', PHP_EOL;
 
         if($hooks_only)
