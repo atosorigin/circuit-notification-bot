@@ -17,6 +17,7 @@ if($argv[1] == "help")
 
 $bot_dir=$argv[1];
 $test_plugin=isset($argv[2]) && $argv[2] == "test_plugin";
+$get_token=isset($argv[2]) && $argv[2] == "token";
 
 if(is_dir($bot_dir))
 {
@@ -42,6 +43,20 @@ if(is_dir($bot_dir))
         $config['hooks_only'] = true;
         include('./index.php');
     }
+    elseif($get_token)
+    {
+        $host = isset($argv[3]) ? $argv[3] : "https://eu.yourcircuit.com";
+
+        if($host == "sandbox")
+        {
+            $host = "https://circuitsandbox.net";
+        }
+
+        system("curl -d client_id={$config['client']['id']} -d client_secret={$config['client']['secret']} -d grant_type=client_credentials -d scope=ALL ${host}/oauth/token");
+
+        exit(0);
+    }
+
 
     circuit_bot($config);
 }
