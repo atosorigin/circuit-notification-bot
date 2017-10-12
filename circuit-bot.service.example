@@ -1,0 +1,7 @@
+[Unit]
+Description=Run Circuit Bot for status notifications
+
+[Service]
+Type=oneshot
+# Make sure your PHP version is at least 5.5
+ExecStart=/usr/bin/php /path/to/run-bot.php /path/to/bot
