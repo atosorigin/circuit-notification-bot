@@ -86,6 +86,14 @@ if(!function_exists('circuit_bot'))
 
         $config['api.messaging.basic'] = new Api\MessagingBasicApi;
 
+        try{
+            (new Api\UserManagementApi())->setUserPresence('AVAILABLE', null, 'Crunching data...');
+        }
+        catch (Exception $e)
+        {
+            echo 'Exception when setting presence: ', $e->getMessage(), PHP_EOL;
+        }
+
         echo 'Initializing plugins', PHP_EOL;
 
         $hooks->do_action(ACTION_PLG_INIT);
@@ -221,20 +229,17 @@ if(!function_exists('circuit_bot'))
 
     }
 
-    function verify_token($token){
-
-        echo "Veryfing token...", PHP_EOL;
-
-        $api_config = clone Client\Configuration::getDefaultConfiguration();
-        $api_config->setAccessToken($token);
-
-        $api_client = new ApiClient($api_config);
-
-        $user_api = new Api\UserManagementApi($api_client);
-
+    function verify_token($token)
+    {
         try
         {
-            $user_api->setUserPresence('AVAILABLE', null, 'Crunching data...');
+            echo "Veryfing token...", PHP_EOL;
+
+            $api_config = clone Client\Configuration::getDefaultConfiguration();
+            $api_config->setAccessToken($token);
+
+            (new Api\UserManagementApi(new ApiClient($api_config)))->getProfile();
+
             return true;
         }
         catch(Exception $e)
