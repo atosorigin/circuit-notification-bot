@@ -9,6 +9,10 @@ Updates are just a pulling and rebasing (or merging; whatever you prefer) upstre
 
 Monolithic repo (mono-repo) in this case means that all modules of the project are in one repository. Not using an monolithic tree (mono-tree) means that the modules are still in their own distinct folders.
 
+    git clone git@github.com:atosorigin/circuit-notification-bot.git circuit-bot
+    cd circuit-bot
+    ./fetch-api-client.sh
+
 # Paradigms
 
 - Everything in this project is designed to work auto-magically.
@@ -48,7 +52,7 @@ Plugins may change their behaviour based on the presence of a trigger (e.g. whet
 
 ## Create a Bot
 
-Your bot should live in it's own directory. The name should start with `circuit-bot-`.
+Your bot should live in it's own directory. It should reside in `./bot` and the name should start with `circuit-bot-`.
 
 Automating this is todo.
 
@@ -57,7 +61,13 @@ Automating this is todo.
      - in `composer.json`: Edit name, description and author, but leave everything else unchanged.
      - in `config.php`   : Insert your OAuth Client ID and Secret. Insert the conversation ID of the conversation the messages should appear in. (See Q&A below how to get it.)
  - `composer install` to install the dependencies.
+ - Install plugins via `composer require author/plugin-name`, also see below.
+ - Configure plugins in `config.php`.
  - Your bot is now ready!
+
+## Run a Bot
+
+    ./run-bot.php path/to/bot
 
 # Plugins
 
