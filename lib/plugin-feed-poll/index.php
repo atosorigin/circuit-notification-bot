@@ -119,10 +119,13 @@ if(!function_exists('wakeup_feed'))
 
                     $mes = new AdvancedMessage(
                         preg_replace($patterns, $replacements, $content),
-                        $storage->retrieve('ltp_' . sha1($link)) // ltp link to parent
+                        $parent
                     );
 
-                    $mes->title = $item->get_title();
+                    if($parent == null)
+                    {
+                        $mes->title = $item->get_title();
+                    }
 
                     $my_state['msg_ids'][] = $mes->id;
                     $my_state['mtl'][$mes->id] = $link;
