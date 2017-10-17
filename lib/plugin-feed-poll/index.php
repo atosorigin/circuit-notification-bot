@@ -119,8 +119,9 @@ if(!function_exists('wakeup_feed'))
             {
                 for ($i = $feed->get_item_quantity()-1; $i >= 0; $i--)
                 {
-                    echo 'Item: ',$i, PHP_EOL;
                     $item = $feed->get_item($i);
+
+                    echo "Item: $i, id: {$item->get_id()}\n";
 
                     if($skip && $item->get_id() == $mri)
                     {
@@ -129,10 +130,10 @@ if(!function_exists('wakeup_feed'))
                     }
                     elseif($skip && $i == 0) // most recent item not found ...
                     {
-                        $i = $feed->get_item_quantity();
+                        $i = $feed->get_item_quantity(); // restart from top
                         $skip = false;
 
-                        echo 'mri not found', PHP_EOL;
+                        echo "mri $mri not found\n";
                         continue;
                     }
                     elseif($skip)
