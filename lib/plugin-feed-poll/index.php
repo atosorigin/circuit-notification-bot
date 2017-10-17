@@ -140,13 +140,14 @@ if(!function_exists('wakeup_feed'))
                         continue;
                     }
 
-                    if(item_author_is_participant($item))
+                    $link = $item->get_link(0);
+                    $parent = $storage->retrieve('ltp_' . sha1($link)); // ltp link to parent
+
+                    if(item_author_is_participant($item) &&  $parent != null)
                     {
                         echo 'Skipping item with contributor present in conversation', PHP_EOL;
                         continue;
                     }
-
-                    $link = $item->get_link(0);
 
                     $patterns = [
                         '/\n/', // circuit does not like line breaks
@@ -232,11 +233,6 @@ if(!function_exists('wakeup_feed'))
     function item_author_is_participant($item){
 
         global $plugin_states;
-
-        if($plugin_states['ciis0.feed-poll']['stor']->retrieve('ltp_' . sha1($item->get_link())) == null)
-        {
-            return false;
-        }
 
         foreach($item->get_authors() as $author)
         {
