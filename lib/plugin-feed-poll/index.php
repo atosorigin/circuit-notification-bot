@@ -225,6 +225,8 @@ if(!function_exists('wakeup_feed'))
         {
             echo "Feed: Message {$msg_id} is ours!", PHP_EOL;
             $my_state['stor']->store('ltp_' .  sha1($my_state['mtl'][$msg_id]), $item_id); // ltp link to parent, hash to sanitize link (url)
+
+            circuit_send_message_adv(new AdvancedMessage("<a href=\"{$my_state['mtl'][$msg_id]}\">Link to ticket</a>", $item_id));
         }
         else
         {
