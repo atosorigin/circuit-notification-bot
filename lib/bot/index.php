@@ -2,10 +2,12 @@
 
 use ICanBoogie\Storage\FileStorage;
 
+use Swagger\Client;
+use Swagger\Client\Api;
+use Swagger\Client\ApiClient;
+
 if(!function_exists('circuit_bot'))
 {
-    define('TOKEN_ENDPOINT', 'https://eu.yourcircuit.com/oauth/token');
-
     define('ACTION_WAKEUP', 'wakeup');
     define('ACTION_WAKEUP_ADV', 'wakeup_advanced');
 
@@ -34,13 +36,26 @@ if(!function_exists('circuit_bot'))
         $plugin_states = [];
         $hooks_only = hooks_only($config);
 
+        if(isset($config['host']))
+        {
+            echo 'Using custom host ', $config['host'], PHP_EOL;
+
+            define('TOKEN_ENDPOINT', $config['host'] . '/oauth/token');
+            Client\Configuration::getDefaultConfiguration()->setHost($config['host'] . '/rest/v2');
+        }
+        else
+        {
+            define('TOKEN_ENDPOINT', 'https://eu.yourcircuit.com/oauth/token');
+        }
+
+
         if(isset($config['client']) && isset($config['client']['id']) && isset($config['client']['secret']))
         {
             $storage = new FileStorage(__DIR__);
             $token_key = 'token_' . $config['client']['id'];
 
             // Try to reuse OAuth token, request new one if expired.
-            if($response = $storage->retrieve($token_key))
+            if(($response = $storage->retrieve($token_key)) && verify_token($response['access_token']))
             {
                 echo 'Token loaded', PHP_EOL;
                 $token = $response['access_token'];
@@ -53,13 +68,15 @@ if(!function_exists('circuit_bot'))
                     ->getAccessToken(TOKEN_ENDPOINT, 'client_credentials', ['scope' => 'ALL'])
                     ['result'];
 
-                $storage->store($token_key, $response, $response['expires_in'] - 10 /* just to be sure */);
+                $storage->store($token_key, $response, isset($response['expires_in']) ? $response['expires_in'] - 10 /* just to be sure */ : null);
+
+                print_r($response);
 
                 $token = $response['access_token'];
             }
 
             // Configure OAuth2 access token for authorization
-            Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken($token);
+            Client\Configuration::getDefaultConfiguration()->setAccessToken($token);
 
         }
         elseif(!$hooks_only)
@@ -67,7 +84,15 @@ if(!function_exists('circuit_bot'))
             die('Missing OAuth Client-ID and/or Client secret!');
         }
 
-        $config['api.messaging.basic'] = new Swagger\Client\Api\MessagingBasicApi;
+        $config['api.messaging.basic'] = new Api\MessagingBasicApi;
+
+        try{
+            (new Api\UserManagementApi())->setUserPresence('AVAILABLE', null, 'Crunching data...');
+        }
+        catch (Exception $e)
+        {
+            echo 'Exception when setting presence: ', $e->getMessage(), PHP_EOL;
+        }
 
         echo 'Initializing plugins', PHP_EOL;
 
@@ -77,6 +102,14 @@ if(!function_exists('circuit_bot'))
 
         $wakeup = $hooks->do_action(ACTION_WAKEUP);
         $wakeup_advanced = $hooks->do_action(ACTION_WAKEUP_ADV);
+
+        try{
+            (new Api\UserManagementApi())->setUserPresence('AWAY', null, 'Sleeping');
+        }
+        catch (Exception $e)
+        {
+            echo 'Exception when setting presence: ', $e->getMessage(), PHP_EOL;
+        }
 
         echo 'Done.', PHP_EOL;
 
@@ -192,6 +225,35 @@ if(!function_exists('circuit_bot'))
         {
             global $plugin_states;
             $plugin_states[$plg][$key][] = $this->id; // the array should be initialized by plugin
+        }
+
+    }
+
+    function verify_token($token)
+    {
+        try
+        {
+            echo "Veryfing token...", PHP_EOL;
+
+            $api_config = clone Client\Configuration::getDefaultConfiguration();
+            $api_config->setAccessToken($token);
+
+            (new Api\UserManagementApi(new ApiClient($api_config)))->getProfile();
+
+            return true;
+        }
+        catch(Exception $e)
+        {
+            if($e->getCode() == 401)
+            {
+                return false;
+            }
+            else
+            {
+                echo "Error accessing API: {$e->getMessage()}", PHP_EOL;
+                print_r($e);
+                exit(1);
+            }
         }
 
     }

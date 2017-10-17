@@ -9,14 +9,43 @@ if(!function_exists('wakeup_feed'))
 
     function feed_init()
     {
+        global $config;
         global $plugin_states;
 
         $plugin_states['ciis0.feed-poll'] = [
             'msg_ids' => [],
             'mtl' => [], // message to link
             'stor' => new ICanBoogie\Storage\FileStorage(__DIR__ . DIRECTORY_SEPARATOR . 'stor'), // stor = store (no typo here)
+            'mails' => get_conversation_participant_emails($config['conv_id']),
         ];
     }
+
+    /**
+     * @return array, of mail addresses as strings
+     */
+    function get_conversation_participant_emails($conv_id)
+    {
+
+        $mails = [];
+
+        $conv_api = new Swagger\Client\Api\ConversationQueriesApi();
+        $user_api = new Swagger\Client\Api\UserManagementApi();
+
+        try {
+
+            foreach($conv_api->getConversationbyId($conv_id)['participants'] as $participant_id)
+            {
+                $user = $user_api->getUserById($participant_id);
+                $mails[] = $user['email_address'];
+            }
+
+            return $mails;
+
+        } catch (Exception $e) {
+            echo 'Exception when retrieving conversation participants: ', $e->getMessage(), PHP_EOL;
+        }
+    }
+
 
     $hooks->add_action('wakeup_advanced', 'wakeup_feed');
 
@@ -74,14 +103,48 @@ if(!function_exists('wakeup_feed'))
             $feed->set_raw_data((string) ($response->getBody()));
             $feed->init();
 
+            if($feed->get_item_quantity() == 0)
+            {
+                echo 'Feed: Empty. Nothing to do.', PHP_EOL;
+                continue;
+            }
+
             $mri = $storage->retrieve($feed_mri_token);
             $id0 = $feed->get_item(0)->get_id();
+            $skip = !hooks_only($config); // by default expands to true; for more output when hooks_only is enabled
 
-            if($id0 != $mri || hooks_only($config)) // ignore for hooks_only to have some output
+            echo 'Feed has ' . $feed->get_item_quantity() . ' items.', PHP_EOL;
+
+            if($id0 != $mri || hooks_only($config)) // same
             {
-                foreach ($feed->get_items() as $item)
+                for ($i = $feed->get_item_quantity()-1; $i >= 0; $i--)
                 {
-                    if($item->get_id() == $mri && !hooks_only($config)) break; // same
+                    echo 'Item: ',$i, PHP_EOL;
+                    $item = $feed->get_item($i);
+
+                    if($skip && $item->get_id() == $mri)
+                    {
+                        $skip = false;
+                        continue;
+                    }
+                    elseif($skip && $i == 0) // most recent item not found ...
+                    {
+                        $i = $feed->get_item_quantity();
+                        $skip = false;
+
+                        echo 'mri not found', PHP_EOL;
+                        continue;
+                    }
+                    elseif($skip)
+                    {
+                        continue;
+                    }
+
+                    if(check_skip_contributor_conversation_participant($item))
+                    {
+                        echo 'Skipping item with contributor present in conversation', PHP_EOL;
+                        continue;
+                    }
 
                     $link = $item->get_link(0);
 
@@ -166,6 +229,24 @@ if(!function_exists('wakeup_feed'))
         else
         {
             echo "Feed: Message {$msg_id} not ours!", PHP_EOL;
+        }
+    }
+
+    function check_skip_contributor_conversation_participant($item){
+
+        global $plugin_states;
+
+        if($plugin_states['ciis0.feed-poll']['stor']->retrieve('ltp_' . sha1($item->get_link())) == null)
+        {
+            return false;
+        }
+
+        foreach($item->get_contributors() as $contributor)
+        {
+            if(in_array($contributor->get_email(), $plugin_states['ciis0.feed-poll']['mails']))
+            {
+                return true;
+            }
         }
     }
 
