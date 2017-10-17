@@ -119,8 +119,9 @@ if(!function_exists('wakeup_feed'))
             {
                 for ($i = $feed->get_item_quantity()-1; $i >= 0; $i--)
                 {
-                    echo 'Item: ',$i, PHP_EOL;
                     $item = $feed->get_item($i);
+
+                    echo "Item: $i, id: {$item->get_id()}\n";
 
                     if($skip && $item->get_id() == $mri)
                     {
@@ -129,10 +130,10 @@ if(!function_exists('wakeup_feed'))
                     }
                     elseif($skip && $i == 0) // most recent item not found ...
                     {
-                        $i = $feed->get_item_quantity();
+                        $i = $feed->get_item_quantity(); // restart from top
                         $skip = false;
 
-                        echo 'mri not found', PHP_EOL;
+                        echo "mri $mri not found\n";
                         continue;
                     }
                     elseif($skip)
@@ -140,19 +141,20 @@ if(!function_exists('wakeup_feed'))
                         continue;
                     }
 
-                    if(check_skip_contributor_conversation_participant($item))
+                    $link = $item->get_link(0);
+                    $parent = $storage->retrieve('ltp_' . sha1($link)); // ltp link to parent
+
+                    if(item_author_is_participant($item) &&  $parent != null)
                     {
                         echo 'Skipping item with contributor present in conversation', PHP_EOL;
                         continue;
                     }
 
-                    $link = $item->get_link(0);
-
                     $patterns = [
                         '/\n/', // circuit does not like line breaks
                         '/<del>(.*?)<\\/del><ins>(.*?)<\\/ins>/',
                         '/<ins>(.*?)<\\/ins>/',
-                        '/\[(.+?)\]\((.+?)\)/', // revert html2text links
+                        '/\[([^\[\]]+?)\]\((.+?)\)/', // revert html2text links
                     ];
 
                     $replacements = [
@@ -182,10 +184,13 @@ if(!function_exists('wakeup_feed'))
 
                     $mes = new AdvancedMessage(
                         preg_replace($patterns, $replacements, $content),
-                        $storage->retrieve('ltp_' . sha1($link)) // ltp link to parent
+                        $parent
                     );
 
-                    $mes->title = $item->get_title();
+                    if($parent == null)
+                    {
+                        $mes->title = $item->get_title();
+                    }
 
                     $my_state['msg_ids'][] = $mes->id;
                     $my_state['mtl'][$mes->id] = $link;
@@ -222,6 +227,8 @@ if(!function_exists('wakeup_feed'))
         {
             echo "Feed: Message {$msg_id} is ours!", PHP_EOL;
             $my_state['stor']->store('ltp_' .  sha1($my_state['mtl'][$msg_id]), $item_id); // ltp link to parent, hash to sanitize link (url)
+
+            circuit_send_message_adv(new AdvancedMessage("<a href=\"{$my_state['mtl'][$msg_id]}\">Link to ticket</a>", $item_id));
         }
         else
         {
@@ -229,18 +236,13 @@ if(!function_exists('wakeup_feed'))
         }
     }
 
-    function check_skip_contributor_conversation_participant($item){
+    function item_author_is_participant($item){
 
         global $plugin_states;
 
-        if($plugin_states['ciis0.feed-poll']['stor']->retrieve('ltp_' . sha1($item->get_link())) == null)
+        foreach($item->get_authors() as $author)
         {
-            return false;
-        }
-
-        foreach($item->get_contributors() as $contributor)
-        {
-            if(in_array($contributor->get_email(), $plugin_states['ciis0.feed-poll']['mails']))
+            if(in_array($author->get_email(), $plugin_states['ciis0.feed-poll']['mails']))
             {
                 return true;
             }
