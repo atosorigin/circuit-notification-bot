@@ -89,7 +89,7 @@ if(!function_exists('wakeup_feed'))
                         '/\n/', // circuit does not like line breaks
                         '/<del>(.*?)<\\/del><ins>(.*?)<\\/ins>/',
                         '/<ins>(.*?)<\\/ins>/',
-                        '/\[(.+?)\]\((.+?)\)/', // revert html2text links
+                        '/\[([^\[\]]+?)\]\((.+?)\)/', // revert html2text links
                     ];
 
                     $replacements = [
