@@ -140,7 +140,7 @@ if(!function_exists('wakeup_feed'))
                         continue;
                     }
 
-                    if(check_skip_contributor_conversation_participant($item))
+                    if(item_author_is_participant($item))
                     {
                         echo 'Skipping item with contributor present in conversation', PHP_EOL;
                         continue;
@@ -229,7 +229,7 @@ if(!function_exists('wakeup_feed'))
         }
     }
 
-    function check_skip_contributor_conversation_participant($item){
+    function item_author_is_participant($item){
 
         global $plugin_states;
 
@@ -238,9 +238,9 @@ if(!function_exists('wakeup_feed'))
             return false;
         }
 
-        foreach($item->get_contributors() as $contributor)
+        foreach($item->get_authors() as $author)
         {
-            if(in_array($contributor->get_email(), $plugin_states['ciis0.feed-poll']['mails']))
+            if(in_array($author->get_email(), $plugin_states['ciis0.feed-poll']['mails']))
             {
                 return true;
             }
