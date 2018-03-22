@@ -15,6 +15,7 @@ if(!function_exists('wakeup_feed'))
         $plugin_states['ciis0.feed-poll'] = [
             'msg_ids' => [],
             'mtl' => [], // message to link
+            'mtc' => [], // message to conv_id
             'stor' => new ICanBoogie\Storage\FileStorage(__DIR__ . DIRECTORY_SEPARATOR . 'stor'), // stor = store (no typo here)
             'mails' => get_conversation_participant_emails($config['conv_id']),
         ];
@@ -201,6 +202,7 @@ if(!function_exists('wakeup_feed'))
 
                     $my_state['msg_ids'][] = $mes->id;
                     $my_state['mtl'][$mes->id] = $link;
+                    $my_state['mtc'][$msg->id] = $conv_id;
 
                     if(isset($conv_id))
                     {
@@ -235,7 +237,14 @@ if(!function_exists('wakeup_feed'))
             echo "Feed: Message {$msg_id} is ours!", PHP_EOL;
             $my_state['stor']->store('ltp_' .  sha1($my_state['mtl'][$msg_id]), $item_id); // ltp link to parent, hash to sanitize link (url)
 
-            circuit_send_message_adv(new AdvancedMessage("<a href=\"{$my_state['mtl'][$msg_id]}\">Link to ticket</a>", $item_id));
+            $msg = new AdvancedMessage("<a href=\"{$my_state['mtl'][$msg_id]}\">Link to ticket</a>", $item_id);
+
+            if(isset($my_state['mtc'][$msg_id]))
+            {
+                $msg->conv_id = $my_state['mtc'][$msg_id];
+            }
+
+            circuit_send_message_adv($msg);
         }
         else
         {
