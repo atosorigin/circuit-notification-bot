@@ -76,13 +76,19 @@ if(!function_exists('wakeup_feed'))
             $storage = $my_state['stor'];
             $feed_mri_token = 'mri_' . sha1($feed_url); // mri most recent id; hash to sanitize
 
-            $client_cfg = [];
+            $client_cfg = [ 'defaults' => array() ];
 
             if(in_array('cookies', $feed_auth))
             {
                 $cookies = $my_feed['cookies'];
-                $client_cfg['defaults'] = [
-                    'cookies' => GuzzleHttp\Cookie\CookieJar::fromArray($cookies, parse_url($auth_url, PHP_URL_HOST))
+                $client_cfg['defaults']['cookies'] = GuzzleHttp\Cookie\CookieJar::fromArray($cookies, parse_url($auth_url, PHP_URL_HOST));
+            }
+
+            if(in_array('basic', $feed_auth))
+            {
+                $client_cfg['defaults']['auth'] = [
+                    $my_feed['basic_user'],
+                    $my_feed['basic_pass']
                 ];
             }
 
