@@ -172,7 +172,7 @@ if(!function_exists('circuit_bot'))
         if(hooks_only($config)) return;
 
         $api_instance = $config['api.messaging.basic'];
-        $conv_id = $config['conv_id'];
+        $conv_id = $msg_adv->conv_id ? $msg_adv->conv_id : $config['conv_id'];
 
         $content = circuit_message_truncate($msg_adv->message);
 
@@ -180,7 +180,7 @@ if(!function_exists('circuit_bot'))
         {
             if($msg_adv->parent)
             {
-                $result = $api_instance->addTextItemWithParent($msg_adv->conv_id ? $msg_adv->conv_id : $conv_id, $msg_adv->parent, $content, [ /* attachments */ ], $msg_adv->title);
+                $result = $api_instance->addTextItemWithParent($conv_id, $msg_adv->parent, $content, [ /* attachments */ ], $msg_adv->title);
             }
             else
             {

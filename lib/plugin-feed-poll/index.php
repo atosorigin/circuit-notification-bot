@@ -71,6 +71,7 @@ if(!function_exists('wakeup_feed'))
             if(isset($my_feed['conv_id']))
             {
                 $conv_id = $my_feed['conv_id'];
+                echo 'Using custom conv_id ', $conv_id, '.', PHP_EOL;
             }
 
             $storage = $my_state['stor'];
