@@ -6,7 +6,7 @@ Project to aid in sending status messages to Unify's Circuit. It is thought to b
 
 ## Prerequisites
 
- - PHP 5.3+
+ - PHP 5.5+
  - composer
  - jq
 
@@ -60,11 +60,10 @@ Plugins may change their behaviour based on the presence of a trigger (e.g. whet
 
 # General Requirements
 
- - PHP 5.3+
+ - PHP 5.5
  - Composer
     - Dependency Management and plugins.
     - I do not recommend to use the curl-pipe command from getcomposer.org, use your distributions package manager instead. Package should be named `composer`.<br>
-     (RHEL7: Make sure the `optional` repo is activated: `subscription-manager repos --enable=rhel-7-server-optional-rpms`)
  - [`jq`](https://stedolan.github.io/jq)
     - install from package manager, package should be named `jq`.
     - alternatively see jq's [Download Page](https://stedolan.github.io/jq/download/).
@@ -239,12 +238,13 @@ Moving those files to the bot's directory is a TODO.
 
 # Q&A
 
-**Q**: Conversation ID<br>
-**A**: Goto Circuit, right-click the converstation, copy link to conversation. Everything behind the last `/` is the ID.<br>
-Example: The link of the SDK Support Group is `https://eu.yourcircuit.com/#/conversation/119dd505-06f3-4848-ad4d-325724519c2e`, the ID then is `119dd505-06f3-4848-ad4d-325724519c2e`.
-
-**Q**: OAuth
-**A**: Register Circuit Application: [Sandbox](https://yourcircuit.typeform.com/to/sxOjAg)
+<dl>
+<dt>Conversation ID</dt>
+<dd>Goto Circuit, right-click the converstation, copy link to conversation. Everything behind the last `/` is the ID.<br>
+Example: The link of the SDK Support Group is <code>https://eu.yourcircuit.com/#/conversation/119dd505-06f3-4848-ad4d-325724519c2e</code>, the ID then is <code>119dd505-06f3-4848-ad4d-325724519c2e</code>.</dd>
+<dt>OAuth</dt>
+<dd>Register a Circuit Application: <a href="https://yourcircuit.typeform.com/to/sxOjAg">Sandbox</a></dd>
+</dl>
 
 # Author
 
