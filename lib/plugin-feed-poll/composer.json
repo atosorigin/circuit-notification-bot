@@ -16,7 +16,8 @@
     "require": {
         "ciis0/circuit-bot": "^1.0",
         "guzzlehttp/guzzle": "^5.3",
-        "simplepie/simplepie": "^1.5"
+        "simplepie/simplepie": "^1.5",
+        "soundasleep/html2text": "~0.5"
     },
     "autoload": {
         "files": [ "index.php" ]
