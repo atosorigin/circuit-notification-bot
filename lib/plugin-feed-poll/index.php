@@ -266,7 +266,7 @@ if(!function_exists('wakeup_feed'))
 
         $my_state = $plugin_states['ciis0.feed-poll'];
 
-        if(hooks_only($config))
+        if(!hooks_only($config))
         {
             foreach($my_state['mris'] as $feed_mri_token => $mri)
             {
