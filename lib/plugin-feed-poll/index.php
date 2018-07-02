@@ -202,7 +202,7 @@ if(!function_exists('wakeup_feed'))
 
                     $my_state['msg_ids'][] = $mes->id;
                     $my_state['mtl'][$mes->id] = $link;
-                    $my_state['mtc'][$msg->id] = $conv_id;
+                    $my_state['mtc'][$mes->id] = $conv_id;
 
                     if(isset($conv_id))
                     {
