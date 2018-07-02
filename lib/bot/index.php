@@ -13,6 +13,7 @@ if(!function_exists('circuit_bot'))
 
     define('ACTION_PLG_INIT', 'init_plugins');
     define('ACTION_PARENT_ID', 'parent_id');
+    define('ACTION_SUCCESS', 'success');
 
     function print_conv_item($conv_item)
     {
@@ -121,7 +122,11 @@ if(!function_exists('circuit_bot'))
             }
         }
 
-        echo 'Done.', PHP_EOL;
+        echo 'Informing plugins about succes...', PHP_EOL;
+
+        $hooks->do_action(ACTION_SUCCESS);
+
+        echo 'Done!', PHP_EOL;
 
         if($hooks_only)
         {
