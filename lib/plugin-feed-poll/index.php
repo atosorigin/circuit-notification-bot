@@ -270,7 +270,7 @@ if(!function_exists('wakeup_feed'))
         {
             foreach($my_state['mris'] as $feed_mri_token => $mri)
             {
-                //$my_state['stor']->store($feed_mri_token, $mri);
+                $my_state['stor']->store($feed_mri_token, $mri);
                 echo "Stored mri $mri for $feed_mri_token.", PHP_EOL;
             }
         } else {
