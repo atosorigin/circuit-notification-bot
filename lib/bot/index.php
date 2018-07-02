@@ -96,7 +96,7 @@ if(!function_exists('circuit_bot'))
             }
             catch (Exception $e)
             {
-                echo 'Exception when setting presence: ', $e->getMessage(), PHP_EOL;
+                die('Exception when setting presence: '. $e->getMessage());
             }
         }
 
@@ -110,12 +110,15 @@ if(!function_exists('circuit_bot'))
         $wakeup = $hooks->do_action(ACTION_WAKEUP);
         $wakeup_advanced = $hooks->do_action(ACTION_WAKEUP_ADV);
 
-        try{
-            (new Api\UserManagementApi())->setUserPresence('AWAY', null, 'Sleeping');
-        }
-        catch (Exception $e)
+        if(!$hooks_only)
         {
-            echo 'Exception when setting presence: ', $e->getMessage(), PHP_EOL;
+            try{
+                (new Api\UserManagementApi())->setUserPresence('AWAY', null, 'Sleeping');
+            }
+            catch (Exception $e)
+            {
+                die('Exception when setting presence: ' . $e->getMessage());
+            }
         }
 
         echo 'Done.', PHP_EOL;
@@ -166,7 +169,7 @@ if(!function_exists('circuit_bot'))
         }
         catch (Exception $e)
         {
-            echo 'Exception when calling MessagingBasicApi->addTextItem: ', $e->getMessage(), PHP_EOL;
+            die('Exception when calling MessagingBasicApi->addTextItem: ' . $e->getMessage());
         }
     }
 
@@ -208,6 +211,7 @@ if(!function_exists('circuit_bot'))
         {
             echo 'Exception when calling MessagingBasicApi->addTextItem/addTextItemWithParent: ', $e->getMessage(), PHP_EOL;
             echo 'Message was: ', PHP_EOL, $content, PHP_EOL, PHP_EOL;
+            exit(2);
         }
     }
 
