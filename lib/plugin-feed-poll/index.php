@@ -17,7 +17,7 @@ if(!function_exists('wakeup_feed'))
             'mtl' => [], // message to link
             'mtc' => [], // message to conv_id
             'stor' => new ICanBoogie\Storage\FileStorage(__DIR__ . DIRECTORY_SEPARATOR . 'stor'), // stor = store (no typo here)
-            'mails' => get_conversation_participant_emails($config['conv_id']),
+            'mails' => hooks_only($config) ? [] : get_conversation_participant_emails($config['conv_id']),
         ];
     }
 
