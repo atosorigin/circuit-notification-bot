@@ -60,6 +60,9 @@ if(!function_exists('circuit_bot'))
                 echo 'Token loaded', PHP_EOL;
                 $token = $response['access_token'];
             }
+            elseif($hooks_only){
+                echo "No token found, but skipping due to hooks_only", PHP_EOL;
+            }
             else
             {
                 echo 'No token found, requesting new one...', PHP_EOL;
@@ -86,13 +89,17 @@ if(!function_exists('circuit_bot'))
 
         $config['api.messaging.basic'] = new Api\MessagingBasicApi;
 
-        try{
-            (new Api\UserManagementApi())->setUserPresence('AVAILABLE', null, 'Crunching data...');
-        }
-        catch (Exception $e)
+        if(!$hooks_only)
         {
-            echo 'Exception when setting presence: ', $e->getMessage(), PHP_EOL;
+            try{
+                (new Api\UserManagementApi())->setUserPresence('AVAILABLE', null, 'Crunching data...');
+            }
+            catch (Exception $e)
+            {
+                echo 'Exception when setting presence: ', $e->getMessage(), PHP_EOL;
+            }
         }
+
 
         echo 'Initializing plugins', PHP_EOL;
 
@@ -169,7 +176,11 @@ if(!function_exists('circuit_bot'))
         global $config;
         global $hooks;
 
-        if(hooks_only($config)) return;
+        if(hooks_only($config))
+        {
+            print_r($msg_adv);
+            return;
+        }
 
         $api_instance = $config['api.messaging.basic'];
         $conv_id = $msg_adv->conv_id ? $msg_adv->conv_id : $config['conv_id'];
