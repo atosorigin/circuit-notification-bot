@@ -13,6 +13,7 @@ if(!function_exists('circuit_bot'))
 
     define('ACTION_PLG_INIT', 'init_plugins');
     define('ACTION_PARENT_ID', 'parent_id');
+    define('ACTION_SUCCESS', 'success');
 
     function print_conv_item($conv_item)
     {
@@ -96,7 +97,7 @@ if(!function_exists('circuit_bot'))
             }
             catch (Exception $e)
             {
-                echo 'Exception when setting presence: ', $e->getMessage(), PHP_EOL;
+                die('Exception when setting presence: '. $e->getMessage());
             }
         }
 
@@ -110,15 +111,22 @@ if(!function_exists('circuit_bot'))
         $wakeup = $hooks->do_action(ACTION_WAKEUP);
         $wakeup_advanced = $hooks->do_action(ACTION_WAKEUP_ADV);
 
-        try{
-            (new Api\UserManagementApi())->setUserPresence('AWAY', null, 'Sleeping');
-        }
-        catch (Exception $e)
+        if(!$hooks_only)
         {
-            echo 'Exception when setting presence: ', $e->getMessage(), PHP_EOL;
+            try{
+                (new Api\UserManagementApi())->setUserPresence('AWAY', null, 'Sleeping');
+            }
+            catch (Exception $e)
+            {
+                die('Exception when setting presence: ' . $e->getMessage());
+            }
         }
 
-        echo 'Done.', PHP_EOL;
+        echo 'Informing plugins about succes...', PHP_EOL;
+
+        $hooks->do_action(ACTION_SUCCESS);
+
+        echo 'Done!', PHP_EOL;
 
         if($hooks_only)
         {
@@ -166,7 +174,7 @@ if(!function_exists('circuit_bot'))
         }
         catch (Exception $e)
         {
-            echo 'Exception when calling MessagingBasicApi->addTextItem: ', $e->getMessage(), PHP_EOL;
+            die('Exception when calling MessagingBasicApi->addTextItem: ' . $e->getMessage());
         }
     }
 
@@ -208,6 +216,7 @@ if(!function_exists('circuit_bot'))
         {
             echo 'Exception when calling MessagingBasicApi->addTextItem/addTextItemWithParent: ', $e->getMessage(), PHP_EOL;
             echo 'Message was: ', PHP_EOL, $content, PHP_EOL, PHP_EOL;
+            exit(2);
         }
     }
 
