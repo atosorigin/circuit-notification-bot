@@ -18,6 +18,7 @@ if(!function_exists('wakeup_feed'))
             'mtc' => [], // message to conv_id
             'stor' => new ICanBoogie\Storage\FileStorage(__DIR__ . DIRECTORY_SEPARATOR . 'stor'), // stor = store (no typo here)
             'mails' => hooks_only($config) ? [] : get_conversation_participant_emails($config['conv_id']),
+            'mris' => [] // most recent id's (by feed), key = sha1(feed), value = mri
         ];
     }
 
@@ -222,10 +223,8 @@ if(!function_exists('wakeup_feed'))
                 echo 'Feed: no new items, nothing to do.', PHP_EOL;
             }
 
-            if(!hooks_only($config))
-            {
-                $storage->store($feed_mri_token, $mri);
-            }
+            $my_state['mris'][$feed_mri_token] = $mri;
+
         }
     }
 
@@ -254,6 +253,30 @@ if(!function_exists('wakeup_feed'))
         {
             echo "Feed: Message {$msg_id} not ours!", PHP_EOL;
         }
+    }
+
+    $hooks->add_action(ACTION_SUCCESS, 'feed_success');
+
+    function feed_success(){
+
+        global $config;
+        global $plugin_states;
+
+        echo 'Bot confirmed success, saving most recent id\'s...', PHP_EOL;
+
+        $my_state = $plugin_states['ciis0.feed-poll'];
+
+        if(hooks_only($config))
+        {
+            foreach($my_state['mris'] as $feed_mri_token => $mri)
+            {
+                //$my_state['stor']->store($feed_mri_token, $mri);
+                echo "Stored mri $mri for $feed_mri_token.", PHP_EOL;
+            }
+        } else {
+            echo 'hooks_only: saving skipped.', PHP_EOL;
+        }
+
     }
 
     function item_author_is_participant($item){
