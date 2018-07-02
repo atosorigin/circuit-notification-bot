@@ -122,6 +122,7 @@ if(!function_exists('wakeup_feed'))
             $skip = !hooks_only($config); // by default expands to true; for more output when hooks_only is enabled
 
             echo 'Feed has ' . $feed->get_item_quantity() . ' items.', PHP_EOL;
+            echo "MRI ID: $feed_mri_token", PHP_EOL;
 
             if($id0 != $mri || hooks_only($config)) // same
             {
@@ -151,6 +152,9 @@ if(!function_exists('wakeup_feed'))
 
                     $link = $item->get_link(0);
                     $parent = $storage->retrieve('ltp_' . sha1($link)); // ltp link to parent
+
+                    echo 'Searching for parent...', PHP_EOL;
+                    echo "$link: ltp_", sha1($link), PHP_EOL;
 
                     if(item_author_is_participant($item) &&  $parent != null)
                     {
