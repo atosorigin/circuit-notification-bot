@@ -168,7 +168,7 @@ if(!function_exists('wakeup_feed'))
                         '/<del>(.*?)<\\/del><ins>(.*?)<\\/ins>/',
                         '/<ins>(.*?)<\\/ins>/',
                         '/\[([^\[\]]+?)\]\((.+?)\)/', // revert html2text links
-                        '/<(Unassigned)>/',
+                        '/<(Unassigned|none)>/',
                     ];
 
                     $replacements = [
@@ -176,7 +176,7 @@ if(!function_exists('wakeup_feed'))
                         '-(\1)+(\2)',
                         '+(\1)',
                         '<a href="\2">\1</a>',
-                        '\1',
+                        '(\1)',
                     ];
 
                     libxml_use_internal_errors(true); // prevent "invalid entity" warnings in php
