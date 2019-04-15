@@ -69,7 +69,7 @@ if(!function_exists('circuit_bot'))
                 echo 'No token found, requesting new one...', PHP_EOL;
 
                 $response = (new OAuth2\Client($config['client']['id'], $config['client']['secret']))
-                    ->getAccessToken(TOKEN_ENDPOINT, 'client_credentials', ['scope' => 'ALL'])
+                    ->getAccessToken(TOKEN_ENDPOINT, 'client_credentials', ['scope' => 'READ_CONVERSATIONS,WRITE_CONVERSATIONS,WRITE_USER_PROFILE,READ_USER_PROFILE'])
                     ['result'];
 
                 $storage->store($token_key, $response, isset($response['expires_in']) ? $response['expires_in'] - 10 /* just to be sure */ : null);
