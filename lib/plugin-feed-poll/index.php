@@ -168,7 +168,7 @@ if(!function_exists('wakeup_feed'))
                         '/<del>(.*?)<\\/del><ins>(.*?)<\\/ins>/',
                         '/<ins>(.*?)<\\/ins>/',
                         '/\[([^\[\]]+?)\]\((.+?)\)/', // revert html2text links
-                        '/<(Unassigned|none)>/',
+                        '/<(Unassigned|none|omitted)>/', // text rtc does not escape correctly
                     ];
 
                     $replacements = [
