@@ -195,6 +195,8 @@ if(!function_exists('circuit_bot'))
 
         $content = circuit_message_truncate($msg_adv->message);
 
+	echo "Message to send: $content", PHP_EOL;
+
         try
         {
             if($msg_adv->parent)
@@ -216,6 +218,7 @@ if(!function_exists('circuit_bot'))
         {
             echo 'Exception when calling MessagingBasicApi->addTextItem/addTextItemWithParent: ', $e->getMessage(), PHP_EOL;
             echo 'Message was: ', PHP_EOL, $content, PHP_EOL, PHP_EOL;
+            print_r($e->getResponseBody());
             exit(2);
         }
     }
