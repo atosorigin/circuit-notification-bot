@@ -169,7 +169,7 @@ if(!function_exists('wakeup_feed'))
                         '/<ins>(.*?)<\\/ins>/',
                         '/\[([^\[\]]+?)\]\((.+?)\)/', // revert html2text links
                         '/<(Unassigned|none|omitted)>/', // text rtc does not escape correctly
-			'/(\/)(https?:)/',
+                        '/(\/)(https?:)/',
                     ];
 
                     $replacements = [
@@ -177,21 +177,21 @@ if(!function_exists('wakeup_feed'))
                         '-(\1)+(\2)',
                         '+(\1)',
                         '<a href="\2">\1</a>',
-			'(\1)',
-			'\1 \2',
+                        '(\1)',
+                        '\1 \2',
                     ];
 
                     libxml_use_internal_errors(true); // prevent "invalid entity" warnings in php
 
-		    echo "Raw description: ";
-		    print_r($item->get_description());
-		    echo PHP_EOL;
+                    echo "Raw description: ";
+                    print_r($item->get_description());
+                    echo PHP_EOL;
 
                     $content = Html2Text\Html2Text::convert($item->get_description());
 
-		    echo "html2text description: ";
-		    print_r($content);
-		    echo PHP_EOL;
+                    echo "html2text description: ";
+                    print_r($content);
+                    echo PHP_EOL;
 
                     if(count(libxml_get_errors()) > 0)
                     {
