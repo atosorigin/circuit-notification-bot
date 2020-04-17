@@ -170,6 +170,7 @@ if(!function_exists('wakeup_feed'))
                         '/\[([^\[\]]+?)\]\((.+?)\)/', // revert html2text links
                         '/<(Unassigned|none|omitted)>/', // text rtc does not escape correctly
                         '/(\/)(https?:)/',
+                        '/}/',
                     ];
 
                     $replacements = [
@@ -179,6 +180,7 @@ if(!function_exists('wakeup_feed'))
                         '<a href="\2">\1</a>',
                         '(\1)',
                         '\1 \2',
+                        '&#x7D;',
                     ];
 
                     libxml_use_internal_errors(true); // prevent "invalid entity" warnings in php
