@@ -194,12 +194,13 @@ if(!function_exists('circuit_bot'))
         $conv_id = $msg_adv->conv_id ? $msg_adv->conv_id : $config['conv_id'];
 
         $content = circuit_message_truncate($msg_adv->message);
-        $break= false;
+
+        $encoded = false;
 
         echo "Message to send: $content", PHP_EOL;
 
-        while(!$break) {
-
+        while(true)
+        {
             try
             {
                 if($msg_adv->parent)
@@ -217,7 +218,7 @@ if(!function_exists('circuit_bot'))
                 }
                 print_conv_item($result);
 
-                $break = true;
+                break;
             }
             catch (Exception $e)
             {
@@ -225,7 +226,16 @@ if(!function_exists('circuit_bot'))
                 echo 'Message was: ', PHP_EOL, $content, PHP_EOL, PHP_EOL;
                 print_r($e->getResponseBody());
 
-                $content = circuit_message_truncate(htmlspecialchars($content));
+                if(!$encoded)
+                {
+                    $content = circuit_message_truncate(htmlspecialchars($content));
+                    $encoded = true;
+                }
+                else
+                {
+                    echo 'Retry failed', PHP_EOL;
+                    break;
+                }
             }
 
         }
