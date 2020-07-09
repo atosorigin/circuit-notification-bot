@@ -194,32 +194,40 @@ if(!function_exists('circuit_bot'))
         $conv_id = $msg_adv->conv_id ? $msg_adv->conv_id : $config['conv_id'];
 
         $content = circuit_message_truncate($msg_adv->message);
+        $break= false;
 
-	echo "Message to send: $content", PHP_EOL;
+        echo "Message to send: $content", PHP_EOL;
 
-        try
-        {
-            if($msg_adv->parent)
+        while(!$break) {
+
+            try
             {
-                $result = $api_instance->addTextItemWithParent($conv_id, $msg_adv->parent, $content, [ /* attachments */ ], $msg_adv->title);
+                if($msg_adv->parent)
+                {
+                    $result = $api_instance->addTextItemWithParent($conv_id, $msg_adv->parent, $content, [ /* attachments */ ], $msg_adv->title);
+                }
+                else
+                {
+                    global $hooks;
+
+                    $result = $api_instance->addTextItem($conv_id, $content, [ /* attachments */ ], $msg_adv->title);
+
+                    $hooks->do_action(ACTION_PARENT_ID, $msg_adv->id, $result['item_id']);
+
+                }
+                print_conv_item($result);
+
+                $break = true;
             }
-            else
+            catch (Exception $e)
             {
-                global $hooks;
+                echo 'Exception when calling MessagingBasicApi->addTextItem/addTextItemWithParent: ', $e->getMessage(), PHP_EOL;
+                echo 'Message was: ', PHP_EOL, $content, PHP_EOL, PHP_EOL;
+                print_r($e->getResponseBody());
 
-                $result = $api_instance->addTextItem($conv_id, $content, [ /* attachments */ ], $msg_adv->title);
-
-                $hooks->do_action(ACTION_PARENT_ID, $msg_adv->id, $result['item_id']);
-
+                $content = circuit_message_truncate(htmlspecialchars($content));
             }
-            print_conv_item($result);
-        }
-        catch (Exception $e)
-        {
-            echo 'Exception when calling MessagingBasicApi->addTextItem/addTextItemWithParent: ', $e->getMessage(), PHP_EOL;
-            echo 'Message was: ', PHP_EOL, $content, PHP_EOL, PHP_EOL;
-            print_r($e->getResponseBody());
-            exit(2);
+
         }
     }
 
